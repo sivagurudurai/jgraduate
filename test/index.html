@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.3/jquery.min.js"></script>
+<script type="text/javascript" src="../jquery.jgraduate.js"></script>
+<script type="text/javascript">
+	$(function() {
+		function launchPicker(elem) {
+			var pos = elem.position();
+			// 'background-color':'blue', position: 'absolute', width:'200px', height:'200px'
+			$('#grad_picker').css({'left': pos.left, 'top': pos.top}).jGraduate();
+		}
+		$('a').click(function() { launchPicker($(this)); });
+	});
+</script>
+<title>jGraduate Test Page</title>
+</head>
+<body>
+<div id="grad_picker"></div>
+<a href="#">Pick</a>
+</body>
+</html>
