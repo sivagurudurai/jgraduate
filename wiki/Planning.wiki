@@ -4,7 +4,7 @@
 
 This jQuery plugin will allow a user to pick a gradient and return it as either:
 
-  * an unattached SVG gradient DOM element (linearGradient or radialGradient)
+  * an unattached SVG gradient DOM element ([http://www.w3.org/TR/SVGTiny12/painting.html#LinearGradientElement linearGradient] or [http://www.w3.org/TR/SVGTiny12/painting.html#RadialGradientElement radialGradient])
   * raw text represnting a CSS3 WebKit-style gradient
 
 = Roadmap =
