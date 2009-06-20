@@ -2,9 +2,21 @@
 
 = Introduction =
 
-TBD
+This jQuery plugin will allow a user to pick a gradient and return it as either:
 
+* an unattached SVG gradient DOM element (<linearGradient> or <radialGradient>)
+* raw text represnting a CSS3 WebKit-style gradient
 
-= Details =
+= Roadmap =
 
-TBD
+== 0.1.x ==
+
+The first version of the picker will be very simple:
+
+* the left-hand side will show the current gradient (drawn as inline SVG rect)
+* the right-hand side will have:
+  * Ok/Cancel buttons
+  * Start definition: x, y, color, offset input boxes
+  * End definition: x, y, color, offset input boxes
+* the x,y,offset inputs will be validated as a number between 0.0 and 1.0
+* the color inputs will be validated as a string #NNNNNN (where N is a digit 0..9)
