@@ -11,7 +11,7 @@ This jQuery plugin will allow a user to pick a gradient and return it as either:
 
 == 0.1.x ==
 
-The first version of the picker will be very simple:
+The first version of the picker will only allow a simple linear gradient with a start/stop offset to be defined:
 
   * the left-hand side will show the current gradient (drawn as inline SVG rect)
   * the right-hand side will have:
