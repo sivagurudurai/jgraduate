@@ -12,23 +12,22 @@
  background-color: #EFEFEF;
  position: absolute;
  width: 500px;
- height: 300px;
 }
 
 .jGraduate_Swatch {
  display: inline;
- position: relative;
- width: 300px;
- height: 300px;
 }
 
 .jGraduate_Form {
- display: inline;
- position: relative;
+ float: right;
  width: 200px;
- height: 300px;
+ left:300px;
+}
+
+.jGraduate_OkCancel {
+ text-align:center;
 }
 
 .jGraduate_Ok,.jGraduate_Cancel {
- width: 100px;
+ width: 80px;
 }
