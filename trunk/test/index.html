@@ -22,7 +22,10 @@
 		function launchPicker(elem) {
 			var pos = elem.position();
 			// 
-			$('#grad_picker').css({'left': pos.left, 'top': pos.top}).jGraduate();
+			$('#grad_picker').css({'left': pos.left, 'top': pos.top}).jGraduate(
+				function() {
+					console.log(this.gradient);
+				});
 		}
 		$('#button').click(function() { launchPicker($(this)); });
 	});
