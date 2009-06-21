@@ -10,10 +10,16 @@
  *
  */
 ns = { svg: 'http://www.w3.org/2000/svg' };
+if(!window.console) {
+  window.console = new function() {
+    this.log = function(str) {};
+    this.dir = function(str) {};
+  };
+}
 jQuery.fn.jGraduate =
 	function(options) {
+		console.log('hello');
 	 	var $arguments = arguments;
-	 	console.log($arguments);
 		return this.each( function() {
 			var $this = $(this), id = $this.attr('id');
             if (!id)
