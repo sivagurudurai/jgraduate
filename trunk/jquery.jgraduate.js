@@ -28,7 +28,17 @@ jQuery.fn.jGraduate =
               return;
             }
             
-            var 
+            var okButton = null, 
+            cancelButton = null,
+            x1Input = null,
+            y1Input = null,
+            x2Input = null,
+            y2Input = null,
+            beginColorInput = null,
+            beginOpacityInput = null,
+            endColorInput = null,
+            endOpacityInput = null,
+            
             okClicked = function() {
             	$.isFunction($this.okCallback) && $this.okCallback();
             	$this.hide();
@@ -41,11 +51,12 @@ jQuery.fn.jGraduate =
 
             $.extend(true, $this, // public properties, methods, and callbacks
               {
-                gradient: null,
-                okCallback: $.isFunction($arguments[0]) && $arguments[0] || null, // commitCallback function can be overridden to return the selected color to a method you specify when the user clicks "OK"
-                cancelCallback: $.isFunction($arguments[1]) && $arguments[1] || null, // cancelCallback function can be overridden to a method you specify when the user clicks "Cancel"
+                gradient: $arguments[0] || null,
+                okCallback: $.isFunction($arguments[1]) && $arguments[1] || null, // commitCallback function can be overridden to return the selected color to a method you specify when the user clicks "OK"
+                cancelCallback: $.isFunction($arguments[2]) && $arguments[2] || null, // cancelCallback function can be overridden to a method you specify when the user clicks "Cancel"
               });
             
+            console.log($this.gradient);
             $this.addClass('jGraduate_Picker');
             $this.html('<div id="' + id + '_jGraduate_Swatch" class="jGraduate_Swatch"></div><div id="' + id + 
             	'_jGraduate_Form" class="jGraduate_Form">Begin:<br/><label>x</label><input type="text" name="' + id + 
@@ -59,9 +70,11 @@ jQuery.fn.jGraduate =
             	'_jGraduate_endOpacity" size="4"/><br/><div class="jGraduate_OkCancel"><input type="button" id="' + id + 
             	'_jGraduate_Ok" class="jGraduate_Ok" value="OK"/><input type="button" id="' + id +
             	'_jGraduate_Cancel" class="jGraduate_Cancel" value="Cancel"/></div></div>').show();
-            var okButton = $('#'+id+'_jGraduate_Ok');
+            
+            okButton = $('#'+id+'_jGraduate_Ok');
             okButton.bind('click', okClicked);
-            var cancelButton = $('#'+id+'_jGraduate_Cancel');
+            
+            cancelButton = $('#'+id+'_jGraduate_Cancel');
             cancelButton.bind('click', cancelClicked);
             
             // Set up all the SVG elements (the gradient, stops and rectangle)
@@ -73,21 +86,28 @@ jQuery.fn.jGraduate =
             svg.setAttribute('height', '300px');
 			svg.setAttribute("xmlns", ns.svg);
 			
-			var grad = svg.appendChild(document.createElementNS(ns.svg, 'linearGradient'));
-			grad.id = 'jgraduate_grad';
-			grad.setAttribute('x1','0.0');
-			grad.setAttribute('y1','0.0');
-			grad.setAttribute('x2','1.0');
-			grad.setAttribute('y2','1.0');
-			$this.gradient = grad;
-			
-			var begin = grad.appendChild(document.createElementNS(ns.svg, 'stop'));
-			begin.setAttribute('offset', '0.0');
-			begin.setAttribute('stop-color', 'red');
+			if ($this.gradient) {
+				$this.gradient = svg.appendChild( document.importNode($this.gradient, true) );
+				$this.gradient.id = id+'_jgraduate_grad';
+			}
+			else {
+				var grad = svg.appendChild(document.createElementNS(ns.svg, 'linearGradient'));
+				grad.id = id+'_jgraduate_grad';
+				grad.setAttribute('x1','0.0');
+				grad.setAttribute('y1','0.0');
+				grad.setAttribute('x2','1.0');
+				grad.setAttribute('y2','1.0');
+				
+				var begin = grad.appendChild(document.createElementNS(ns.svg, 'stop'));
+				begin.setAttribute('offset', '0.0');
+				begin.setAttribute('stop-color', 'red');
 
-			var end = grad.appendChild(document.createElementNS(ns.svg, 'stop'));
-			end.setAttribute('offset', '1.0');
-			end.setAttribute('stop-color', 'yellow');
+				var end = grad.appendChild(document.createElementNS(ns.svg, 'stop'));
+				end.setAttribute('offset', '1.0');
+				end.setAttribute('stop-color', 'yellow');
+			
+				$this.gradient = grad;
+			}
 			
             var rect = svg.appendChild(document.createElementNS(ns.svg, 'rect'));
             rect.id = 'jgraduate_rect';
@@ -104,6 +124,6 @@ jQuery.fn.jGraduate =
             rect.setAttribute('y', '5px');
             rect.setAttribute('width', '290px');
             rect.setAttribute('height', '290px');
-            rect.setAttribute('fill', 'url(#jgraduate_grad)');
+            rect.setAttribute('fill', 'url(#'+id+'_jgraduate_grad)');
 		});
 	};
