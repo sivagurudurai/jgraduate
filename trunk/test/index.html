@@ -24,7 +24,7 @@
 		function launchPicker(elem, g) {
 			var pos = elem.position();
 			// 
-			$('#grad_picker').css({'left': pos.left, 'top': pos.top}).jGraduate(g,
+			$('#gradPicker').css({'left': pos.left, 'top': pos.top}).jGraduate(g,
 				function() {
 					console.log(this.gradient);
 				});
@@ -55,7 +55,7 @@
 </script>
 <title>jGraduate Test Page</title>
 </head><body>
-	<div id="grad_picker"></div>
+	<div id="gradPicker"></div>
 	<div id="button1" class="button"></div>	
 	<p>Click the box to change the gradient.</p>
 	<div id="button2" class="button"></div>	
