@@ -20,6 +20,7 @@ jQuery.fn.jGraduate =
 	function(options) {
 	 	var $arguments = arguments;
 		return this.each( function() {
+			console.log('yo');
 			var $this = $(this), id = $this.attr('id');
             if (!id)
             {
