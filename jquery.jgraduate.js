@@ -1,5 +1,5 @@
 ﻿/*
- * jGraduate 0.01
+ * jGraduate 0.2.x
  *
  * jQuery Plugin for a gradient picker
  *
@@ -9,7 +9,7 @@
  * Apache 2 License
  *
  */
-ns = { svg: 'http://www.w3.org/2000/svg' };
+ns = { svg: 'http://www.w3.org/2000/svg', xlink: 'http://www.w3.org/1999/xlink' };
 if(!window.console) {
   window.console = new function() {
     this.log = function(str) {};
@@ -20,7 +20,6 @@ jQuery.fn.jGraduate =
 	function(options) {
 	 	var $arguments = arguments;
 		return this.each( function() {
-			console.log('yo');
 			var $this = $(this), id = $this.attr('id');
             if (!id)
             {
@@ -72,12 +71,13 @@ jQuery.fn.jGraduate =
             
 			// --------------
             // Set up all the SVG elements (the gradient, stops and rectangle)
+            var MAX = 300, MARGIN = 7, STOP_RADIUS = 4, SIZE = MAX - 2*MARGIN;
             var container = document.getElementById(id+'_jGraduate_Swatch');
             var svg = container.appendChild(document.createElementNS(ns.svg, 'svg'));
             svg.id = 'jgraduate_svg';
             
-            svg.setAttribute('width', '300px');
-            svg.setAttribute('height', '300px');
+            svg.setAttribute('width', MAX);
+            svg.setAttribute('height', MAX);
 			svg.setAttribute("xmlns", ns.svg);
 			
 			if ($this.gradient) {
@@ -103,21 +103,53 @@ jQuery.fn.jGraduate =
 				$this.gradient = grad;
 			}
 			
-            var rect = svg.appendChild(document.createElementNS(ns.svg, 'rect'));
-            rect.setAttribute('x', '5px');
-            rect.setAttribute('y', '5px');
-            rect.setAttribute('width', '290px');
-            rect.setAttribute('height', '290px');
-            rect.setAttribute('stroke', 'black');
-            rect.setAttribute('fill', 'none');
+			var x1 = parseFloat($this.gradient.getAttribute('x1')||0.0);
+			var y1 = parseFloat($this.gradient.getAttribute('y1')||0.0);
+			var x2 = parseFloat($this.gradient.getAttribute('x2')||1.0);
+			var y2 = parseFloat($this.gradient.getAttribute('y2')||0.0);
+			console.log(x2);
+			
+            var brect = svg.appendChild(document.createElementNS(ns.svg, 'rect'));
+            brect.setAttribute('x', MARGIN);
+            brect.setAttribute('y', MARGIN);
+            brect.setAttribute('width', SIZE);
+            brect.setAttribute('height', SIZE);
+            brect.setAttribute('stroke', 'black');
+            brect.setAttribute('fill', 'none');
 
             var rect = svg.appendChild(document.createElementNS(ns.svg, 'rect'));
             rect.id = 'jgraduate_rect';
-            rect.setAttribute('x', '5px');
-            rect.setAttribute('y', '5px');
-            rect.setAttribute('width', '290px');
-            rect.setAttribute('height', '290px');
+            rect.setAttribute('x', MARGIN);
+            rect.setAttribute('y', MARGIN);
+            rect.setAttribute('width', SIZE);
+            rect.setAttribute('height', SIZE);
             rect.setAttribute('fill', 'url(#'+id+'_jgraduate_grad)');
+            
+            // stop visuals created here
+            var beginStop = svg.appendChild(document.createElementNS(ns.svg, 'circle'));
+            beginStop.id = "stop1";
+            beginStop.setAttributeNS(ns.xlink, "title", "Begin Stop");
+            beginStop.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
+            	document.createTextNode("Begin Stop"));
+            	
+            beginStop.setAttribute('r', STOP_RADIUS);
+            beginStop.setAttribute('stroke-width', 1);
+            beginStop.setAttribute('fill', 'green');
+            beginStop.setAttribute('stroke', 'black');
+            console.log($this.gradient);
+            beginStop.setAttribute('cx', MARGIN + SIZE*x1);
+            beginStop.setAttribute('cy', MARGIN + SIZE*y1);
+            var endStop = svg.appendChild(document.createElementNS(ns.svg, 'circle'));
+            endStop.id = "stop2";
+            endStop.setAttributeNS(ns.xlink, "title", "End Stop");
+            endStop.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
+            	document.createTextNode("End Stop"));
+            endStop.setAttribute('r', STOP_RADIUS);
+            endStop.setAttribute('stroke-width', 2);
+            endStop.setAttribute('stroke', 'black');
+            endStop.setAttribute('fill', 'red');
+            endStop.setAttribute('cx', MARGIN+SIZE*x2);
+            endStop.setAttribute('cy', MARGIN+SIZE*y2);
 			// --------------
             
             // bind GUI elements
@@ -133,6 +165,7 @@ jQuery.fn.jGraduate =
             x1Input.val(x1);
             x1Input.change( function() {
             	$this.gradient.setAttribute('x1', this.value);
+            	beginStop.setAttribute('cx', MARGIN + SIZE*this.value);
             });
 
             y1Input = $('#'+id+'_jGraduate_y1');
@@ -141,6 +174,7 @@ jQuery.fn.jGraduate =
             y1Input.val(y1);
             y1Input.change( function() {
             	$this.gradient.setAttribute('y1', this.value);
+            	beginStop.setAttribute('cy', MARGIN + SIZE*this.value);
             });
             
             x2Input = $('#'+id+'_jGraduate_x2');
@@ -149,6 +183,7 @@ jQuery.fn.jGraduate =
             x2Input.val(x2);
             x2Input.change( function() {
             	$this.gradient.setAttribute('x2', this.value);
+            	endStop.setAttribute('cx', MARGIN + SIZE*this.value);
             });
             
             y2Input = $('#'+id+'_jGraduate_y2');
@@ -157,6 +192,7 @@ jQuery.fn.jGraduate =
             y2Input.val(y2);
             y2Input.change( function() {
             	$this.gradient.setAttribute('y2', this.value);
+            	endStop.setAttribute('cy', MARGIN + SIZE*this.value);
             });            
             
             var stops = $this.gradient.getElementsByTagNameNS(ns.svg, 'stop');
