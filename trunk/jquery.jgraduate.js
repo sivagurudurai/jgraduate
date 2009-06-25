@@ -58,12 +58,12 @@ jQuery.fn.jGraduate =
             $this.addClass('jGraduate_Picker');
             $this.html('<div id="' + id + '_jGraduate_Swatch" class="jGraduate_Swatch"></div><div id="' + id + 
             	'_jGraduate_Form" class="jGraduate_Form">Begin:<br/><label>x</label><input type="text" id="' + id + 
-            	'_jGraduate_x1" size="3"/><label>y</label><input type="text" id="' + id +
-            	'_jGraduate_y1" size="3"/><br/><label>Color</label><input type="text" id="' + id +
+            	'_jGraduate_x1" size="3" title="Enter starting x value between 0.0 and 1.0"/><label>y</label><input type="text" id="' + id +
+            	'_jGraduate_y1" size="3" title="Enter starting y value between 0.0 and 1.0"/><br/><label>Color</label><input type="text" id="' + id +
             	'_jGraduate_beginColor" size="6"/><br/><label>Opacity</label><input type="text" id="' + id +
             	'_jGraduate_beginOpacity" size="4"/><br/>End:<br/><label>x</label><input type="text" id="' + id + 
-            	'_jGraduate_x2" size="3"/><label>y</label><input type="text" id="' + id +
-            	'_jGraduate_y2" size="3"/><br/><label>Color</label><input type="text" id="' + id +
+            	'_jGraduate_x2" size="3" title="Enter ending x value between 0.0 and 1.0"/><label>y</label><input type="text" id="' + id +
+            	'_jGraduate_y2" size="3" title="Enter ending y value between 0.0 and 1.0"/><br/><label>Color</label><input type="text" id="' + id +
             	'_jGraduate_endColor" size="6"/><br/><label>Opacity</label><input type="text" id="' + id +
             	'_jGraduate_endOpacity" size="4"/><br/><div class="jGraduate_OkCancel"><input type="button" id="' + id + 
             	'_jGraduate_Ok" class="jGraduate_Ok" value="OK"/><input type="button" id="' + id +
@@ -107,7 +107,6 @@ jQuery.fn.jGraduate =
 			var y1 = parseFloat($this.gradient.getAttribute('y1')||0.0);
 			var x2 = parseFloat($this.gradient.getAttribute('x2')||1.0);
 			var y2 = parseFloat($this.gradient.getAttribute('y2')||0.0);
-			console.log(x2);
 			
             var brect = svg.appendChild(document.createElementNS(ns.svg, 'rect'));
             brect.setAttribute('x', MARGIN);
@@ -136,7 +135,6 @@ jQuery.fn.jGraduate =
             beginStop.setAttribute('stroke-width', 1);
             beginStop.setAttribute('fill', 'green');
             beginStop.setAttribute('stroke', 'black');
-            console.log($this.gradient);
             beginStop.setAttribute('cx', MARGIN + SIZE*x1);
             beginStop.setAttribute('cy', MARGIN + SIZE*y1);
             var endStop = svg.appendChild(document.createElementNS(ns.svg, 'circle'));
@@ -164,6 +162,9 @@ jQuery.fn.jGraduate =
             if(!x1) x1 = "0.0";
             x1Input.val(x1);
             x1Input.change( function() {
+            	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
+            		this.value = 0.0; 
+            	}
             	$this.gradient.setAttribute('x1', this.value);
             	beginStop.setAttribute('cx', MARGIN + SIZE*this.value);
             });
@@ -173,6 +174,9 @@ jQuery.fn.jGraduate =
             if(!y1) y1 = "0.0";
             y1Input.val(y1);
             y1Input.change( function() {
+            	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
+            		this.value = 0.0; 
+            	}
             	$this.gradient.setAttribute('y1', this.value);
             	beginStop.setAttribute('cy', MARGIN + SIZE*this.value);
             });
@@ -182,6 +186,9 @@ jQuery.fn.jGraduate =
             if(!x2) x2 = "1.0";
             x2Input.val(x2);
             x2Input.change( function() {
+            	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
+            		this.value = 1.0;
+            	}
             	$this.gradient.setAttribute('x2', this.value);
             	endStop.setAttribute('cx', MARGIN + SIZE*this.value);
             });
@@ -191,6 +198,9 @@ jQuery.fn.jGraduate =
             if(!y2) y2 = "0.0";
             y2Input.val(y2);
             y2Input.change( function() {
+            	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
+            		this.value = 0.0;
+            	}
             	$this.gradient.setAttribute('y2', this.value);
             	endStop.setAttribute('cy', MARGIN + SIZE*this.value);
             });            
