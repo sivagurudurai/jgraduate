@@ -6,28 +6,63 @@
  * Licensed under the Apache License Version 2
  */
 .jGraduate_Picker {
- border-style: solid;
- border-color: lightgrey black black lightgrey;
- border-width: 1px;
- background-color: #EFEFEF;
- position: absolute;
- width: 500px;
+	border-style: solid;
+	border-color: lightgrey black black lightgrey;
+	border-width: 1px;
+	background-color: #EFEFEF;
+	position: absolute;
+	width: 500px;
 }
 
 .jGraduate_Swatch {
- display: inline;
+	display: inline;
 }
 
 .jGraduate_Form {
- float: right;
- width: 200px;
- left:300px;
+	float: right;
+	width: 200px;
+	left:300px;
 }
 
 .jGraduate_OkCancel {
- text-align:center;
+	text-align:center;
 }
 
 .jGraduate_Ok,.jGraduate_Cancel {
- width: 80px;
+	width: 80px;
 }
+
+.colorBox {
+	display: inline-block;
+	height: 16px;
+	width: 16px;
+	border: 1px solid #808080;
+	vertical-align: -3px;
+/*	cursor: pointer;*/
+}
+
+label.jGraduate_Form_Heading {
+	position: relative;
+	left: 10px; 
+	top: 13px;
+	background-color: #EFEFEF;
+	padding: 2px;
+}
+
+div.jGraduate_Form_Section {
+	border-style: solid;
+	border-width: 1px;
+	border-color: grey;
+	padding: 15px 5px 5px 5px;
+	margin: 2px;
+}
+
+/*
+.jGraduate_Form label, .jGraduate_Form input {
+	text-align: center;
+}
+
+.jGraduate_Form > div {
+	text-align: center;
+}
+*/
