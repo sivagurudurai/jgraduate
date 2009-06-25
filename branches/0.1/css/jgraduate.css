@@ -1,0 +1,33 @@
+/* 
+ * jGraduate Default CSS
+ * 
+ * Copyright (c) 2009 Jeff Schiller
+ *
+ * Licensed under the Apache License Version 2
+ */
+.jGraduate_Picker {
+ border-style: solid;
+ border-color: lightgrey black black lightgrey;
+ border-width: 1px;
+ background-color: #EFEFEF;
+ position: absolute;
+ width: 500px;
+}
+
+.jGraduate_Swatch {
+ display: inline;
+}
+
+.jGraduate_Form {
+ float: right;
+ width: 200px;
+ left:300px;
+}
+
+.jGraduate_OkCancel {
+ text-align:center;
+}
+
+.jGraduate_Ok,.jGraduate_Cancel {
+ width: 80px;
+}
