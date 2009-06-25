@@ -9,19 +9,6 @@ This jQuery plugin will allow a user to pick a gradient and return it as either:
 
 = Roadmap =
 
-== 0.1.x ==
-
-The first version will be a proof-of-concept.  The picker will only allow a simple linear gradient with a start/stop offset to be defined:
-
-  * the left-hand side will show the current gradient (drawn as inline SVG rect)
-  * the right-hand side will have:
-    * Ok/Cancel buttons
-    * Start definition: x, y, color, offset input boxes
-    * End definition: x, y, color, offset input boxes
-  * the x,y,offset inputs will be validated as a number between 0.0 and 1.0
-  * the color inputs will be validated as a string #NNNNNN (where N is a digit 0..9)
-  * returns an unattached linearGradient node
-
 == 0.2.x ==
 
 The next version will probably be the first actually useful version and may include:
@@ -30,3 +17,16 @@ The next version will probably be the first actually useful version and may incl
   * radial gradient (done as tab?)
   * option to return Webkit-style gradient as text?
   * spinners for picking opacity, x1, y1, x2, y2, cx, cy, fx, fy ?
+
+== 0.1.x ==
+
+  * Released 2009-06-22 
+  * The first version will be a proof-of-concept.  The picker will only allow a simple linear gradient with a start/stop offset to be defined:
+    * the left-hand side will show the current gradient (drawn as inline SVG rect)
+    * the right-hand side will have:
+      * Ok/Cancel buttons
+      * Start definition: x, y, color, offset input boxes
+      * End definition: x, y, color, offset input boxes
+    * the x,y,offset inputs will be validated as a number between 0.0 and 1.0
+    * the color inputs will be validated as a string #NNNNNN (where N is a digit 0..9)
+    * returns an unattached linearGradient node
