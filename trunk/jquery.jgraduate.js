@@ -104,6 +104,17 @@ jQuery.fn.jGraduate =
             		'<input type="button" id="' + id + '_jGraduate_Cancel" class="jGraduate_Cancel" value="Cancel"/>' +
             	'</div></div>').show();
             
+            var getStopRGB = function(stop) {
+            	var color = stop.getPresentationAttribute('stop-color').rgbColor,
+            		r = color.red.getFloatValue(1),
+            		g = color.green.getFloatValue(1),
+            		b = color.blue.getFloatValue(1);
+            	return [r,g,b];
+            };
+            var getOppositeColor = function(rgb) {
+            	return [255-rgb[0], 255-rgb[1], 255-rgb[2]];
+            };
+            
 			// --------------
             // Set up all the SVG elements (the gradient, stops and rectangle)
             var MAX = 300, MARGIN = 7, STOP_RADIUS = 4, SIZE = MAX - 2*MARGIN;
