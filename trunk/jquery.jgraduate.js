@@ -27,9 +27,7 @@ jQuery.fn.jGraduate =
               return;
             }
             
-            var okButton = null, 
-            cancelButton = null,
-            x1Input = null,
+            var x1Input = null,
             y1Input = null,
             x2Input = null,
             y2Input = null,
@@ -119,6 +117,10 @@ jQuery.fn.jGraduate =
             // Set up all the SVG elements (the gradient, stops and rectangle)
             var MAX = 300, MARGIN = 7, STOP_RADIUS = 4, SIZE = MAX - 2*MARGIN;
             var container = document.getElementById(id+'_jGraduate_Swatch');
+            
+            var svgdoc = new DOMParser().parseFromString(
+            	'<svg xmlns="http://www.w3.org/2000/svg" width="'+MAX+'" height="'+MAX+'">\
+            	</svg>', 'text/xml');
             var svg = container.appendChild(document.createElementNS(ns.svg, 'svg'));
             svg.id = 'jgraduate_svg';
             
@@ -197,15 +199,12 @@ jQuery.fn.jGraduate =
 			// --------------
             
             // bind GUI elements
-            okButton = $('#'+id+'_jGraduate_Ok');
-            okButton.bind('click', okClicked);
+            $('#'+id+'_jGraduate_Ok').bind('click', okClicked);
+            $('#'+id+'_jGraduate_Cancel').bind('click', cancelClicked);
             
-            cancelButton = $('#'+id+'_jGraduate_Cancel');
-            cancelButton.bind('click', cancelClicked);
-            
-            x1Input = $('#'+id+'_jGraduate_x1');
             var x1 = $this.gradient.getAttribute('x1');
             if(!x1) x1 = "0.0";
+            x1Input = $('#'+id+'_jGraduate_x1');
             x1Input.val(x1);
             x1Input.change( function() {
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
@@ -215,9 +214,9 @@ jQuery.fn.jGraduate =
             	beginStop.setAttribute('cx', MARGIN + SIZE*this.value);
             });
 
-            y1Input = $('#'+id+'_jGraduate_y1');
             var y1 = $this.gradient.getAttribute('y1');
             if(!y1) y1 = "0.0";
+            y1Input = $('#'+id+'_jGraduate_y1');
             y1Input.val(y1);
             y1Input.change( function() {
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
@@ -227,9 +226,9 @@ jQuery.fn.jGraduate =
             	beginStop.setAttribute('cy', MARGIN + SIZE*this.value);
             });
             
-            x2Input = $('#'+id+'_jGraduate_x2');
             var x2 = $this.gradient.getAttribute('x2');
             if(!x2) x2 = "1.0";
+            x2Input = $('#'+id+'_jGraduate_x2');
             x2Input.val(x2);
             x2Input.change( function() {
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
@@ -239,9 +238,9 @@ jQuery.fn.jGraduate =
             	endStop.setAttribute('cx', MARGIN + SIZE*this.value);
             });
             
-            y2Input = $('#'+id+'_jGraduate_y2');
             var y2 = $this.gradient.getAttribute('y2');
             if(!y2) y2 = "0.0";
+            y2Input = $('#'+id+'_jGraduate_y2');
             y2Input.val(y2);
             y2Input.change( function() {
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
@@ -252,40 +251,49 @@ jQuery.fn.jGraduate =
             });            
             
             var stops = $this.gradient.getElementsByTagNameNS(ns.svg, 'stop');
+            var numstops = stops.length;
+            // if there are not at least two stops, then 
+            if (numstops < 2) {
+	            while (numstops < 2) {
+    	        	$this.gradient.appendChild( document.createElementNS(ns.svg, 'stop') );
+        	    	++numstops;
+            	}
+            	stops = $this.gradient.getElementsByTagNameNS(ns.svg, 'stop');
+            }
 
-            beginColorInput = $('#'+id+'_jGraduate_beginColor');
-            beginColorBox = $('#'+id+'_jGraduate_colorBoxBegin');
             var beginColor = stops[0].getAttribute('stop-color');
-            if(!beginColor) beginColor = '#000000';
-            beginColorInput.val(beginColor);
+            if(!beginColor) beginColor = '#000';
+            beginColorBox = $('#'+id+'_jGraduate_colorBoxBegin');
             beginColorBox.css({'background-color':beginColor});
+            beginColorInput = $('#'+id+'_jGraduate_beginColor');
+            beginColorInput.val(beginColor);
             beginColorInput.change( function() {
             	stops[0].setAttribute('stop-color', this.value);
 				beginColorBox.css({'background-color':this.value});
             });
 
-            beginOpacityInput = $('#'+id+'_jGraduate_beginOpacity');
             var beginOpacity = stops[0].getAttribute('stop-opacity');
             if(!beginOpacity) beginOpacity = '1.0';
+            beginOpacityInput = $('#'+id+'_jGraduate_beginOpacity');
             beginOpacityInput.val(beginOpacity);
             beginOpacityInput.change( function() {
             	stops[0].setAttribute('stop-opacity', this.value);
             });
 
-            endColorInput = $('#'+id+'_jGraduate_endColor');
+            var endColor = stops[stops.length-1].getAttribute('stop-color');
+            if(!endColor) endColor = '#000';
             endColorBox = $('#'+id+'_jGraduate_colorBoxEnd');
-            var endColor = stops[1].getAttribute('stop-color');
-            if(!endColor) endColor = '#000000';
-            endColorInput.val(endColor);
             endColorBox.css({'background-color':endColor});
+            endColorInput = $('#'+id+'_jGraduate_endColor');
+            endColorInput.val(endColor);
             endColorInput.change( function() {
             	stops[1].setAttribute('stop-color', this.value);
             	endColorBox.css({'background-color':this.value});
             });
 
-            endOpacityInput = $('#'+id+'_jGraduate_endOpacity');
-            var endOpacity = stops[1].getAttribute('stop-opacity');
+            var endOpacity = stops[stops.length-1].getAttribute('stop-opacity');
             if(!endOpacity) endOpacity = '1.0';
+            endOpacityInput = $('#'+id+'_jGraduate_endOpacity');
             endOpacityInput.val(endOpacity);
             endOpacityInput.change( function() {
             	stops[1].setAttribute('stop-opacity', this.value);

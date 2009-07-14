@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html><head>
-	<link type="text/css" rel="stylesheet" href="../css/jgraduate.css"/>
+	<link type="text/css" rel="stylesheet" href="../jgraduate.css"/>
 	<style type="text/css">
 		#grad_picker { display: none; }
 		.button {
@@ -18,7 +18,7 @@
 			var pos = elem.position();
 			$('#gradPicker').css({'left': pos.left, 'top': pos.top}).jGraduate(g, function() {
 				// update our global 'grad' variable with the new cloned gradient
-				grad = document.importNode(this.gradient, true);
+				var grad = document.importNode(this.gradient, true);
 				grad.id = g.id;
 				// replace the old gradient with the new one
 				if(g.parentNode) {
@@ -28,15 +28,16 @@
 		}
 		
 		var svgdoc = new DOMParser().parseFromString(
-			'<svg xmlns="http://www.w3.org/2000/svg" pointer-events="none">\
+			'<svg xmlns="http://www.w3.org/2000/svg">\
 				<linearGradient id="grad">\
-					<stop stop-color="#000" offset="0.0"/>\
-					<stop stop-color="#f00" offset="1.0"/>\
+					<stop stop-color="black" offset="0.0"/>\
+					<stop stop-color="red" offset="1.0"/>\
 				</linearGradient>\
 				<rect width="100%" height="100%" fill="url(#grad)"/>\
 			</svg>', 'text/xml');
+
 		$('#button1').append( document.importNode(svgdoc.documentElement,true) );
-		$('#button1').click(function() { launchPicker($(this),document.getElementById("grad"));});
+		$('#button1').click(function() { launchPicker($(this), document.getElementById("grad")); });
 	});
 	</script>
 	<title>jGraduate Test Page</title>
