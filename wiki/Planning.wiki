@@ -9,14 +9,26 @@ This jQuery plugin will allow a user to pick a gradient and return it as either:
 
 = Roadmap =
 
-== 0.2.x ==
+== Future ==
 
-The next version will probably be the first actually useful version and may include:
-
-  * pluggable color picker ?
   * radial gradient (done as tab?)
   * option to return Webkit-style gradient as text?
-  * spinners for picking opacity, x1, y1, x2, y2, cx, cy, fx, fy ?
+  * option to return VML gradient?
+
+== 0.2.x ==
+
+This version of jGraduate will be the first used in SVG-edit.
+
+  * include jPicker 1.0.8 with jGraduate
+  * remove opacity and color edit boxes from the form
+  * clicking the stop's color box will let you choose the color and opacity from jPicker
+  * dragging a stop on the swatch will automatically update the coordinate values and the gradient
+  * add an overall opacity to the gradient dialog
+  * nest the gradient dialog in a jQuery tabbing pane
+  * first tab will be "Solid Color" and will embed jPicker
+  * second tab will be "Linear Gradient" which will be the existing dialog
+  * initialize jGraduate with a div that has a unique id
+  * jGraduate will insert a tiny SVG document into this div with a blank gradient and will control how this is displayed when Ok/Cancel
 
 == 0.1.x ==
 
