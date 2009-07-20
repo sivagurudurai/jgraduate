@@ -38,7 +38,6 @@ if(!window.console) {
 jQuery.fn.jGraduate =
 	function(options) {
 	 	var $arguments = arguments;
-//	 	console.log(options);
 		return this.each( function() {
 			var $this = $(this),
 				id = $this.attr('id'),
@@ -76,6 +75,7 @@ jQuery.fn.jGraduate =
 
 			if ($this.paint.solidColor == null && $this.paint.linearGradient != null) {
 				mode = "linearGradient";
+				$this.paint.solidColor = new $.jPicker.Color({ hex: 'ffffff', a: 100 });
 			}
 			else if ($this.paint.solidColor != null && $this.paint.linearGradient == null) {
 			}
@@ -146,9 +146,9 @@ jQuery.fn.jGraduate =
             svg.setAttribute('height', MAX);
 			svg.setAttribute("xmlns", ns.svg);
 			
-			if ($this.linearGradient) {
-				$this.linearGradient = svg.appendChild( document.importNode($this.gradient, true) );
-				$this.linearGradient.id = id+'_jgraduate_grad';
+			if ($this.paint.linearGradient) {
+				$this.paint.linearGradient = svg.appendChild( document.importNode($this.paint.linearGradient, true) );
+				$this.paint.linearGradient.id = id+'_jgraduate_grad';
 			}
 			else {
 				var grad = svg.appendChild(document.createElementNS(ns.svg, 'linearGradient'));
@@ -160,19 +160,19 @@ jQuery.fn.jGraduate =
 				
 				var begin = grad.appendChild(document.createElementNS(ns.svg, 'stop'));
 				begin.setAttribute('offset', '0.0');
-				begin.setAttribute('stop-color', 'red');
+				begin.setAttribute('stop-color', '#ff0000');
 
 				var end = grad.appendChild(document.createElementNS(ns.svg, 'stop'));
 				end.setAttribute('offset', '1.0');
-				end.setAttribute('stop-color', 'yellow');
+				end.setAttribute('stop-color', '#ff0');
 			
-				$this.linearGradient = grad;
+				$this.paint.linearGradient = grad;
 			}
 			
-			var x1 = parseFloat($this.linearGradient.getAttribute('x1')||0.0);
-			var y1 = parseFloat($this.linearGradient.getAttribute('y1')||0.0);
-			var x2 = parseFloat($this.linearGradient.getAttribute('x2')||1.0);
-			var y2 = parseFloat($this.linearGradient.getAttribute('y2')||0.0);
+			var x1 = parseFloat($this.paint.linearGradient.getAttribute('x1')||0.0);
+			var y1 = parseFloat($this.paint.linearGradient.getAttribute('y1')||0.0);
+			var x2 = parseFloat($this.paint.linearGradient.getAttribute('x2')||1.0);
+			var y2 = parseFloat($this.paint.linearGradient.getAttribute('y2')||0.0);
 			
             var brect = svg.appendChild(document.createElementNS(ns.svg, 'rect'));
             brect.setAttribute('x', MARGIN);
@@ -189,68 +189,6 @@ jQuery.fn.jGraduate =
             rect.setAttribute('width', SIZE);
             rect.setAttribute('height', SIZE);
             rect.setAttribute('fill', 'url(#'+id+'_jgraduate_grad)');
-            
-			colPicker.hide();
-			lgPicker.hide();
-			
-			colPicker.jPicker(
-				{
-					images: { clientPath: "images/" },
-					color: { active: $this.paint.solidColor, alphaSupport: true }
-				},
-				function(color) { 
-					$this.paint.solidColor = color;
-					okClicked(); 
-				},
-				null,
-				function(){ cancelClicked(); }
-				);
-
-			$(idref + ' .jGraduate_tab_color').click( function(){
-				$(idref + ' .jGraduate_tab_lingrad').removeClass('jGraduate_tab_current');
-				$(idref + ' .jGraduate_tab_color').addClass('jGraduate_tab_current');
-				lgPicker.hide();
-				colPicker.show();
-			});
-			$(idref + ' .jGraduate_tab_lingrad').click( function(){
-				$(idref + ' .jGraduate_tab_color').removeClass('jGraduate_tab_current');
-				$(idref + ' .jGraduate_tab_lingrad').addClass('jGraduate_tab_current');
-				colPicker.hide();
-				lgPicker.show();
-			});
-			
-			if (mode == "linearGradient") {
-				lgPicker.show();
-			}
-			else {
-				colPicker.show();
-			}
-
-			$this.css({'left': pos.left, 'top': pos.top});
-			$this.show();
-			
-/*
-            var x1Input = null,
-            y1Input = null,
-            x2Input = null,
-            y2Input = null,
-            beginColorInput = null,
-            beginColorBox = null,
-            beginOpacityInput = null,
-            endColorInput = null,
-            endColorBox = null,
-            endOpacityInput = null,
-
-            var getStopRGB = function(stop) {
-            	var color = stop.getPresentationAttribute('stop-color').rgbColor,
-            		r = color.red.getFloatValue(1),
-            		g = color.green.getFloatValue(1),
-            		b = color.blue.getFloatValue(1);
-            	return [r,g,b];
-            };
-            var getOppositeColor = function(rgb) {
-            	return [255-rgb[0], 255-rgb[1], 255-rgb[2]];
-            };
             
             // stop visuals created here
             var beginStop = svg.appendChild(document.createElementNS(ns.svg, 'circle'));
@@ -276,13 +214,21 @@ jQuery.fn.jGraduate =
             endStop.setAttribute('fill', 'red');
             endStop.setAttribute('cx', MARGIN+SIZE*x2);
             endStop.setAttribute('cy', MARGIN+SIZE*y2);
-			// --------------
-           
-            // bind GUI elements
-            $('#'+id+'_jGraduate_Ok').bind('click', okClicked);
-            $('#'+id+'_jGraduate_Cancel').bind('click', cancelClicked);
             
-            var x1 = $this.gradient.getAttribute('x1');
+            // bind GUI elements
+            $('#'+id+'_jGraduate_Ok').bind('click', function() {
+            	console.log("jgraduate picker, ok");
+            	console.log($this);
+            	console.log($this.paint);
+				$this.paint.solidColor = null;
+				$this.paint.linearGradient = null;
+            	okClicked();
+            });
+            $('#'+id+'_jGraduate_Cancel').bind('click', function(paint) {
+            	cancelClicked();
+            });
+            
+            var x1 = $this.paint.linearGradient.getAttribute('x1');
             if(!x1) x1 = "0.0";
             x1Input = $('#'+id+'_jGraduate_x1');
             x1Input.val(x1);
@@ -290,11 +236,11 @@ jQuery.fn.jGraduate =
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
             		this.value = 0.0; 
             	}
-            	$this.gradient.setAttribute('x1', this.value);
+            	$this.paint.linearGradient.setAttribute('x1', this.value);
             	beginStop.setAttribute('cx', MARGIN + SIZE*this.value);
             });
 
-            var y1 = $this.gradient.getAttribute('y1');
+            var y1 = $this.paint.linearGradient.getAttribute('y1');
             if(!y1) y1 = "0.0";
             y1Input = $('#'+id+'_jGraduate_y1');
             y1Input.val(y1);
@@ -302,11 +248,11 @@ jQuery.fn.jGraduate =
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
             		this.value = 0.0; 
             	}
-            	$this.gradient.setAttribute('y1', this.value);
+            	$this.paint.linearGradient.setAttribute('y1', this.value);
             	beginStop.setAttribute('cy', MARGIN + SIZE*this.value);
             });
             
-            var x2 = $this.gradient.getAttribute('x2');
+            var x2 = $this.paint.linearGradient.getAttribute('x2');
             if(!x2) x2 = "1.0";
             x2Input = $('#'+id+'_jGraduate_x2');
             x2Input.val(x2);
@@ -314,11 +260,11 @@ jQuery.fn.jGraduate =
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
             		this.value = 1.0;
             	}
-            	$this.gradient.setAttribute('x2', this.value);
+            	$this.paint.linearGradient.setAttribute('x2', this.value);
             	endStop.setAttribute('cx', MARGIN + SIZE*this.value);
             });
             
-            var y2 = $this.gradient.getAttribute('y2');
+            var y2 = $this.paint.linearGradient.getAttribute('y2');
             if(!y2) y2 = "0.0";
             y2Input = $('#'+id+'_jGraduate_y2');
             y2Input.val(y2);
@@ -326,21 +272,21 @@ jQuery.fn.jGraduate =
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
             		this.value = 0.0;
             	}
-            	$this.gradient.setAttribute('y2', this.value);
+            	$this.paint.linearGradient.setAttribute('y2', this.value);
             	endStop.setAttribute('cy', MARGIN + SIZE*this.value);
             });            
             
-            var stops = $this.gradient.getElementsByTagNameNS(ns.svg, 'stop');
+            var stops = $this.paint.linearGradient.getElementsByTagNameNS(ns.svg, 'stop');
             var numstops = stops.length;
             // if there are not at least two stops, then 
             if (numstops < 2) {
 	            while (numstops < 2) {
-    	        	$this.gradient.appendChild( document.createElementNS(ns.svg, 'stop') );
+    	        	$this.linearGradient.appendChild( document.createElementNS(ns.svg, 'stop') );
         	    	++numstops;
             	}
-            	stops = $this.gradient.getElementsByTagNameNS(ns.svg, 'stop');
-            }
-
+            	stops = $this.linearGradient.getElementsByTagNameNS(ns.svg, 'stop');
+            }            
+            
             var beginColor = stops[0].getAttribute('stop-color');
             if(!beginColor) beginColor = '#000';
             beginColorBox = $('#'+id+'_jGraduate_colorBoxBegin');
@@ -378,6 +324,66 @@ jQuery.fn.jGraduate =
             endOpacityInput.change( function() {
             	stops[1].setAttribute('stop-opacity', this.value);
             });
+            
+			// --------------
+            
+			colPicker.hide();
+			lgPicker.hide();
+			
+			colPicker.jPicker(
+				{
+					images: { clientPath: "images/" },
+					color: { active: $this.paint.solidColor, alphaSupport: true }
+				},
+				function(color) { 
+					$this.paint.solidColor = color;
+					$this.paint.linearGradient = null;
+					okClicked(); 
+				},
+				null,
+				function(){ cancelClicked(); }
+				);
+				
+			$(idref + ' .jGraduate_tab_color').click( function(){
+				$(idref + ' .jGraduate_tab_lingrad').removeClass('jGraduate_tab_current');
+				$(idref + ' .jGraduate_tab_color').addClass('jGraduate_tab_current');
+				lgPicker.hide();
+				colPicker.show();
+			});
+			$(idref + ' .jGraduate_tab_lingrad').click( function(){
+				$(idref + ' .jGraduate_tab_color').removeClass('jGraduate_tab_current');
+				$(idref + ' .jGraduate_tab_lingrad').addClass('jGraduate_tab_current');
+				colPicker.hide();
+				lgPicker.show();
+			});
+			
+			if (mode == "linearGradient") {
+				lgPicker.show();
+				colPicker.hide();
+				$(idref + ' .jGraduate_tab_color').removeClass('jGraduate_tab_current');
+				$(idref + ' .jGraduate_tab_lingrad').addClass('jGraduate_tab_current');				
+			}
+			else {
+				colPicker.show();
+				lgPicker.hide();
+				$(idref + ' .jGraduate_tab_color').addClass('jGraduate_tab_current');
+				$(idref + ' .jGraduate_tab_lingrad').removeClass('jGraduate_tab_current');				
+			}
+
+			$this.css({'left': pos.left, 'top': pos.top});
+			$this.show();
+			
+/*
+            var getStopRGB = function(stop) {
+            	var color = stop.getPresentationAttribute('stop-color').rgbColor,
+            		r = color.red.getFloatValue(1),
+            		g = color.green.getFloatValue(1),
+            		b = color.blue.getFloatValue(1);
+            	return [r,g,b];
+            };
+            var getOppositeColor = function(rgb) {
+            	return [255-rgb[0], 255-rgb[1], 255-rgb[2]];
+            };                       
 */
 		});
 	};
