@@ -217,11 +217,7 @@ jQuery.fn.jGraduate =
             
             // bind GUI elements
             $('#'+id+'_jGraduate_Ok').bind('click', function() {
-            	console.log("jgraduate picker, ok");
-            	console.log($this);
-            	console.log($this.paint);
 				$this.paint.solidColor = null;
-				$this.paint.linearGradient = null;
             	okClicked();
             });
             $('#'+id+'_jGraduate_Cancel').bind('click', function(paint) {
@@ -327,9 +323,6 @@ jQuery.fn.jGraduate =
             
 			// --------------
             
-			colPicker.hide();
-			lgPicker.hide();
-			
 			colPicker.jPicker(
 				{
 					images: { clientPath: "images/" },
