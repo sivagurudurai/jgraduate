@@ -21,7 +21,6 @@
 			$('#gradPicker').css({'left': pos.left, 'top': pos.top}).jGraduate(
 				paint, 
 				function(p) {
-					console.log(p.linearGradient);
 					if (p.linearGradient != null) {
 						var oldgrad = document.getElementById("grad");
 						var newgrad = document.importNode(p.linearGradient, true);
@@ -29,6 +28,7 @@
 						// replace the old gradient with the new one
 						var parent = oldgrad.parentNode;
 						parent.replaceChild(newgrad, oldgrad);
+						$('#r').attr('fill', 'url(#grad)');
 					}
 					else { // solid color
 						$('#r').attr('fill', '#'+p.solidColor.hex);
