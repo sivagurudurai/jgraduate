@@ -7,6 +7,25 @@
  * http://blog.codedread.com/
  *
  * Apache 2 License
+ 
+- the Paint object is:
+	{
+		// object describing the color picked used by jPicker
+		solidColor: { },
+		// DOM node for the linear gradient 
+		linearGradient
+	}
+- only one of solidColor and linearGradient must be non-null
+
+- picker accepts the following object as input:
+	{
+		okCallback: function to call when Ok is pressed
+		cancelCallback: function to call when Cancel is pressed
+		paint: object describing the paint to display initially, if not set, then default to opaque white
+	}
+
+- okCallback receives a Paint object
+
  *
  */
 ns = { svg: 'http://www.w3.org/2000/svg', xlink: 'http://www.w3.org/1999/xlink' };
@@ -19,46 +38,63 @@ if(!window.console) {
 jQuery.fn.jGraduate =
 	function(options) {
 	 	var $arguments = arguments;
+//	 	console.log(options);
 		return this.each( function() {
-			var $this = $(this), id = $this.attr('id');
-            if (!id)
+			var $this = $(this),
+				id = $this.attr('id'),
+				idref = '#'+$this.attr('id')+' ';
+            if (!idref)
             {
               alert('Container element must have an id attribute to maintain unique id strings for sub-elements.');
               return;
             }
             
-            var x1Input = null,
-            y1Input = null,
-            x2Input = null,
-            y2Input = null,
-            beginColorInput = null,
-            beginColorBox = null,
-            beginOpacityInput = null,
-            endColorInput = null,
-            endColorBox = null,
-            endOpacityInput = null,
-            
-            okClicked = function() {
-            	$.isFunction($this.okCallback) && $this.okCallback();
+            var okClicked = function() {
+            	$.isFunction($this.okCallback) && $this.okCallback($this.paint);
             	$this.hide();
             },
             cancelClicked = function() {
-            	$this.gradient = null;
             	$.isFunction($this.cancelCallback) && $this.cancelCallback();
             	$this.hide();
             };
 
             $.extend(true, $this, // public properties, methods, and callbacks
               {
-                gradient: $arguments[0] || null,
-                okCallback: $.isFunction($arguments[1]) && $arguments[1] || null, // commitCallback function can be overridden to return the selected color to a method you specify when the user clicks "OK"
-                cancelCallback: $.isFunction($arguments[2]) && $arguments[2] || null, // cancelCallback function can be overridden to a method you specify when the user clicks "Cancel"
+                paint: $arguments[0] || null,
+                okCallback: $.isFunction($arguments[1]) && $arguments[1] || null,
+                cancelCallback: $.isFunction($arguments[2]) && $arguments[2] || null,
               });
-            
+
+			var mode = "solidColor",
+				pos = $this.position(),
+				color = null;
+			
+			if ($this.paint == null) {
+				$this.paint = { solidColor: new $.jPicker.Color({ hex: 'ffffff', a: 100 }), 
+						  		linearGradient: null };
+			}
+
+			if ($this.paint.solidColor == null && $this.paint.linearGradient != null) {
+				mode = "linearGradient";
+			}
+			else if ($this.paint.solidColor != null && $this.paint.linearGradient == null) {
+			}
+			else {
+				return null;
+			}
+
             $this.addClass('jGraduate_Picker');
-            $this.html('<div id="' + id + '_jGraduate_Swatch" class="jGraduate_Swatch"></div>' + 
+            $this.html('<ul class="jGraduate_tabs">' +
+            				'<li class="jGraduate_tab_color jGraduate_tab_current">Solid Color</li>' +
+            				'<li class="jGraduate_tab_lingrad">Linear Gradient</li>' +
+            			'</ul>' +
+            			'<div class="jGraduate_colPick"></div>' +
+            			'<div class="jGraduate_lgPick"></div>');
+			var colPicker = $(idref + '> .jGraduate_colPick');
+			var lgPicker = $(idref + '> .jGraduate_lgPick');
+			
+            lgPicker.html('<div id="' + id + '_jGraduate_Swatch" class="jGraduate_Swatch"></div>' + 
             '<div id="' + id + '_jGraduate_Form" class="jGraduate_Form">' +
-            		
             	'<label class="jGraduate_Form_Heading">Begin Stop</label>' +
             	'<div class="jGraduate_Form_Section">' +
             		'<div>'+
@@ -77,7 +113,6 @@ jQuery.fn.jGraduate =
     	        		'<input type="text" id="' + id + '_jGraduate_beginOpacity" size="4"/>' +
     	        	'</div>' +
            		'</div>' +
-            		
             	'<label class="jGraduate_Form_Heading">End Stop</label>' +
             	'<div class="jGraduate_Form_Section">' +
             		'<div>' +
@@ -96,41 +131,24 @@ jQuery.fn.jGraduate =
     		        	'<input type="text" id="' + id + '_jGraduate_endOpacity" size="4"/>' +
     		        '</div>' +
     	       	'</div>' +
-        	    	
         	    	'<div class="jGraduate_OkCancel">' +
             		'<input type="button" id="' + id + '_jGraduate_Ok" class="jGraduate_Ok" value="OK"/>' +
             		'<input type="button" id="' + id + '_jGraduate_Cancel" class="jGraduate_Cancel" value="Cancel"/>' +
-            	'</div></div>').show();
-            
-            var getStopRGB = function(stop) {
-            	var color = stop.getPresentationAttribute('stop-color').rgbColor,
-            		r = color.red.getFloatValue(1),
-            		g = color.green.getFloatValue(1),
-            		b = color.blue.getFloatValue(1);
-            	return [r,g,b];
-            };
-            var getOppositeColor = function(rgb) {
-            	return [255-rgb[0], 255-rgb[1], 255-rgb[2]];
-            };
-            
+            	'</div></div>');
+			
 			// --------------
             // Set up all the SVG elements (the gradient, stops and rectangle)
-            var MAX = 300, MARGIN = 7, STOP_RADIUS = 4, SIZE = MAX - 2*MARGIN;
+            var MAX = 256, MARGIN = 7, STOP_RADIUS = 4, SIZE = MAX - 2*MARGIN;
             var container = document.getElementById(id+'_jGraduate_Swatch');
-            
-            var svgdoc = new DOMParser().parseFromString(
-            	'<svg xmlns="http://www.w3.org/2000/svg" width="'+MAX+'" height="'+MAX+'">\
-            	</svg>', 'text/xml');
             var svg = container.appendChild(document.createElementNS(ns.svg, 'svg'));
-            svg.id = 'jgraduate_svg';
-            
+            svg.id = id+'_jgraduate_svg';            
             svg.setAttribute('width', MAX);
             svg.setAttribute('height', MAX);
 			svg.setAttribute("xmlns", ns.svg);
 			
-			if ($this.gradient) {
-				$this.gradient = svg.appendChild( document.importNode($this.gradient, true) );
-				$this.gradient.id = id+'_jgraduate_grad';
+			if ($this.linearGradient) {
+				$this.linearGradient = svg.appendChild( document.importNode($this.gradient, true) );
+				$this.linearGradient.id = id+'_jgraduate_grad';
 			}
 			else {
 				var grad = svg.appendChild(document.createElementNS(ns.svg, 'linearGradient'));
@@ -148,13 +166,13 @@ jQuery.fn.jGraduate =
 				end.setAttribute('offset', '1.0');
 				end.setAttribute('stop-color', 'yellow');
 			
-				$this.gradient = grad;
+				$this.linearGradient = grad;
 			}
 			
-			var x1 = parseFloat($this.gradient.getAttribute('x1')||0.0);
-			var y1 = parseFloat($this.gradient.getAttribute('y1')||0.0);
-			var x2 = parseFloat($this.gradient.getAttribute('x2')||1.0);
-			var y2 = parseFloat($this.gradient.getAttribute('y2')||0.0);
+			var x1 = parseFloat($this.linearGradient.getAttribute('x1')||0.0);
+			var y1 = parseFloat($this.linearGradient.getAttribute('y1')||0.0);
+			var x2 = parseFloat($this.linearGradient.getAttribute('x2')||1.0);
+			var y2 = parseFloat($this.linearGradient.getAttribute('y2')||0.0);
 			
             var brect = svg.appendChild(document.createElementNS(ns.svg, 'rect'));
             brect.setAttribute('x', MARGIN);
@@ -171,6 +189,68 @@ jQuery.fn.jGraduate =
             rect.setAttribute('width', SIZE);
             rect.setAttribute('height', SIZE);
             rect.setAttribute('fill', 'url(#'+id+'_jgraduate_grad)');
+            
+			colPicker.hide();
+			lgPicker.hide();
+			
+			colPicker.jPicker(
+				{
+					images: { clientPath: "images/" },
+					color: { active: $this.paint.solidColor, alphaSupport: true }
+				},
+				function(color) { 
+					$this.paint.solidColor = color;
+					okClicked(); 
+				},
+				null,
+				function(){ cancelClicked(); }
+				);
+
+			$(idref + ' .jGraduate_tab_color').click( function(){
+				$(idref + ' .jGraduate_tab_lingrad').removeClass('jGraduate_tab_current');
+				$(idref + ' .jGraduate_tab_color').addClass('jGraduate_tab_current');
+				lgPicker.hide();
+				colPicker.show();
+			});
+			$(idref + ' .jGraduate_tab_lingrad').click( function(){
+				$(idref + ' .jGraduate_tab_color').removeClass('jGraduate_tab_current');
+				$(idref + ' .jGraduate_tab_lingrad').addClass('jGraduate_tab_current');
+				colPicker.hide();
+				lgPicker.show();
+			});
+			
+			if (mode == "linearGradient") {
+				lgPicker.show();
+			}
+			else {
+				colPicker.show();
+			}
+
+			$this.css({'left': pos.left, 'top': pos.top});
+			$this.show();
+			
+/*
+            var x1Input = null,
+            y1Input = null,
+            x2Input = null,
+            y2Input = null,
+            beginColorInput = null,
+            beginColorBox = null,
+            beginOpacityInput = null,
+            endColorInput = null,
+            endColorBox = null,
+            endOpacityInput = null,
+
+            var getStopRGB = function(stop) {
+            	var color = stop.getPresentationAttribute('stop-color').rgbColor,
+            		r = color.red.getFloatValue(1),
+            		g = color.green.getFloatValue(1),
+            		b = color.blue.getFloatValue(1);
+            	return [r,g,b];
+            };
+            var getOppositeColor = function(rgb) {
+            	return [255-rgb[0], 255-rgb[1], 255-rgb[2]];
+            };
             
             // stop visuals created here
             var beginStop = svg.appendChild(document.createElementNS(ns.svg, 'circle'));
@@ -197,7 +277,7 @@ jQuery.fn.jGraduate =
             endStop.setAttribute('cx', MARGIN+SIZE*x2);
             endStop.setAttribute('cy', MARGIN+SIZE*y2);
 			// --------------
-            
+           
             // bind GUI elements
             $('#'+id+'_jGraduate_Ok').bind('click', okClicked);
             $('#'+id+'_jGraduate_Cancel').bind('click', cancelClicked);
@@ -298,6 +378,6 @@ jQuery.fn.jGraduate =
             endOpacityInput.change( function() {
             	stops[1].setAttribute('stop-opacity', this.value);
             });
-
+*/
 		});
 	};
