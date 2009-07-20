@@ -16,17 +16,18 @@
 	<script type="text/javascript" src="jquery.jgraduate.js"></script>
 	<script type="text/javascript">
 	$(function() {
-		var launchPicker = function(elem, p) {
+		var launchPicker = function(elem, paint) {
 			var pos = elem.position();
 			$('#gradPicker').css({'left': pos.left, 'top': pos.top}).jGraduate(
-				p, 
-				function(paint) {
-					console.log(paint.solidColor.hex);
-//					console.log(paint.linearGradient);
-					if (paint.linearGradient != null) {
+				paint, 
+				function(p) {
+					console.log("ok in launchPicker");
+					console.log(p.solidColor);
+					console.log(p.linearGradient);
+					if (p.linearGradient != null) {
 					}
 					else { // solid color
-						$('#r').attr('fill', '#'+paint.solidColor.hex);
+						$('#r').attr('fill', '#'+p.solidColor.hex);
 					}
 					// update our global 'grad' variable with the new cloned gradient
 //					var grad = document.importNode(this.gradient, true);
@@ -36,7 +37,7 @@
 //						g.parentNode.replaceChild(grad, g);
 //					}
 				},
-				function(paint) {
+				function(p) {
 					console.log('cancel');
 				});
 		};
@@ -44,11 +45,10 @@
 		var svgdoc = new DOMParser().parseFromString(
 			'<svg xmlns="http://www.w3.org/2000/svg">\
 				<linearGradient id="grad">\
-					<stop stop-color="black" offset="0.0"/>\
-					<stop stop-color="red" offset="1.0"/>\
+					<stop stop-color="#000" offset="0.0"/>\
+					<stop stop-color="#FF0000" offset="1.0"/>\
 				</linearGradient>\
-				<!--rect id="r" width="100%" height="100%" fill="url(#grad)"/-->\
-				<rect id="r" width="100%" height="100%" fill="#FF0000"/>\
+				<rect id="r" width="100%" height="100%" fill="url(#grad)"/>\
 			</svg>', 'text/xml');
 
 		$('#button1').append( document.importNode(svgdoc.documentElement,true) );
@@ -58,7 +58,6 @@
 			fill = rect.attr("fill");
 			if (fill.substr(0,5) == "url(#") {
 				paint.linearGradient = document.getElementById(fill.substr(5,fill.length-6));
-				console.log(paint);
 			}
 			else {
 				paint.solidColor = new $.jPicker.Color({ hex: fill.substr(1), a: rect.attr("fill-opacity") });
