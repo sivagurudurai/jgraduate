@@ -5,6 +5,7 @@
  *
  * Licensed under the Apache License Version 2
  */
+
 .jGraduate_Picker {
 	border-style: solid;
 	border-color: lightgrey black black lightgrey;
@@ -12,26 +13,6 @@
 	background-color: #EFEFEF;
 	position: absolute;
 	padding: 10px;
-	width: 550px;
-	height: 355px;
-}
-
-.jGraduate_colPick {
-	display: none;
-}
-
-.jGraduate_lgPick {
-	display: none;
-	margin: 0px;
-	border: outset 1px #666;
-}
-
-.jGraduate_tabs {
-	position: relative;
-	background-color: #EFEFEF;
-	padding: 0px;
-	margin: 0px;
-	margin-bottom: 5px;
 }
 
 li.jGraduate_tab_color, li.jGraduate_tab_lingrad {
@@ -52,22 +33,54 @@ li.jGraduate_tab_current {
 	cursor: pointer;
 }
 
+.jGraduate_colPick {
+	display: none;
+}
+
+.jGraduate_lgPick {	
+	display: none;
+	border: outset 1px #666;
+	padding: 10px 7px 5px 5px;
+}
+
+.jGraduate_tabs {
+	position: relative;
+	background-color: #EFEFEF;
+	padding: 0px;
+	margin: 0px;
+	margin-bottom: 5px;
+}
+
 .jGraduate_Swatch {
 	display: inline;
 }
 
-.jGraduate_Form {
-	float: right;
-	width: 200px;
-	left: 300px;
+div.jGraduate_Form {
+	display: inline-block;
+	vertical-align: top;
+	width: 140px;
+	margin: -3px 3px 0px 4px;
 }
 
-.jGraduate_OkCancel {
+div.jGraduate_StopSection {
+	width: 120px;
 	text-align: center;
 }
 
-.jGraduate_Ok,.jGraduate_Cancel {
-	width: 80px;
+div.jGraduate_OkCancel {
+	display: inline-block;
+	vertical-align: top;	
+	width: 113px;
+}
+
+input.jGraduate_Ok, input.jGraduate_Cancel {
+	display: block;
+	width: 100px;
+	margin-left: -4px;
+	margin-right: -4px;
+}
+input.jGraduate_Ok {
+	margin: 9px -4px 5px -4px;
 }
 
 .colorBox {
@@ -75,13 +88,13 @@ li.jGraduate_tab_current {
 	height: 16px;
 	width: 16px;
 	border: 1px solid #808080;
-	vertical-align: -3px;
-/*	cursor: pointer;*/
+	vertical-align: -7px;
+	cursor: pointer;
+	margin: 4px;
 }
 
 label.jGraduate_Form_Heading {
 	position: relative;
-	left: 10px; 
 	top: 13px;
 	background-color: #EFEFEF;
 	padding: 2px;
@@ -95,6 +108,8 @@ div.jGraduate_Form_Section {
 	border-color: grey;
 	padding: 15px 5px 5px 5px;
 	margin: 2px;
+	width: 100px;
+	text-align: center;
 }
 
 div.jGraduate_stopPicker {

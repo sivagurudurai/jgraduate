@@ -94,51 +94,35 @@ jQuery.fn.jGraduate =
 			var lgPicker = $(idref + '> .jGraduate_lgPick');
 			
             lgPicker.html('<div id="' + id + '_jGraduate_Swatch" class="jGraduate_Swatch"></div>' + 
-            '<div id="' + id + '_jGraduate_Form" class="jGraduate_Form">' +
-            	'<label class="jGraduate_Form_Heading">Begin Stop</label>' +
-            	'<div class="jGraduate_Form_Section">' +
-            		'<div>'+
-            			'<label>x</label>' +
-            			'<input type="text" id="' + id + '_jGraduate_x1" size="3" title="Enter starting x value between 0.0 and 1.0"/>' +
-            			'<label>y</label>' +
-            			'<input type="text" id="' + id + '_jGraduate_y1" size="3" title="Enter starting y value between 0.0 and 1.0"/>' +
-            		'</div>' +
-            		'<div>' +
-//	            		'<label>Color</label>' +
-//    	        		'<input type="text" id="' + id + '_jGraduate_beginColor" size="6"/>' +
-        	    		'<div id="' + id + '_jGraduate_colorBoxBegin" class="colorBox"></div>' +
-	            		'<label id="' + id + '_jGraduate_beginOpacity">100%</label>' +
-        	    	'</div>' +
-//        	    	'<div>' +
-//	            		'<label>Opacity</label>' +
-//    	        		'<input type="text" id="' + id + '_jGraduate_beginOpacity" size="4"/>' +
-//    	        	'</div>' +
-           		'</div>' +
-            	'<label class="jGraduate_Form_Heading">End Stop</label>' +
-            	'<div class="jGraduate_Form_Section">' +
-            		'<div>' +
-	            		'<label>x</label>' +
-		            	'<input type="text" id="' + id + '_jGraduate_x2" size="3" title="Enter ending x value between 0.0 and 1.0"/>' +
-    		        	'<label>y</label>' +
-        		    	'<input type="text" id="' + id + '_jGraduate_y2" size="3" title="Enter ending y value between 0.0 and 1.0"/>' +
-        		    '</div>' +
-        		    '<div>' +
-//	            		'<label>Color</label>' +
-//    	        		'<input type="text" id="' + id + '_jGraduate_endColor" size="6"/>' +
-        	    		'<div id="' + id + '_jGraduate_colorBoxEnd" class="colorBox"></div>' +
-		            	'<label id="' + id + '_jGraduate_endOpacity">100%</label>' +
-        	    	'</div>' +
-//        	    	'<div>' +
-//		            	'<label>Opacity</label>' +
-//    		        	'<input type="text" id="' + id + '_jGraduate_endOpacity" size="4"/>' +
-//    		        '</div>' +
+            	'<div class="jGraduate_Form">' +
+            		'<div class="jGraduate_StopSection">' +
+	            		'<label class="jGraduate_Form_Heading">Begin Stop</label>' +
+    	        		'<div class="jGraduate_Form_Section">' +
+        	    			'<label>x</label>' +
+            				'<input type="text" id="' + id + '_jGraduate_x1" size="3" title="Enter starting x value between 0.0 and 1.0"/>' +
+            				'<label>y</label>' +
+            				'<input type="text" id="' + id + '_jGraduate_y1" size="3" title="Enter starting y value between 0.0 and 1.0"/>' +
+	        	    		'<div id="' + id + '_jGraduate_colorBoxBegin" class="colorBox"></div>' +
+		            		'<label id="' + id + '_jGraduate_beginOpacity">100%</label>' +
+        	   			'</div>' +
+        	   		'</div>' +
+        	   		'<div class="jGraduate_StopSection">' +
+	            		'<label class="jGraduate_Form_Heading">End Stop</label>' +
+    	        		'<div class="jGraduate_Form_Section">' +
+	    	        		'<label>x</label>' +
+		    	        	'<input type="text" id="' + id + '_jGraduate_x2" size="3" title="Enter ending x value between 0.0 and 1.0"/>' +
+    		    	    	'<label>y</label>' +
+        		    		'<input type="text" id="' + id + '_jGraduate_y2" size="3" title="Enter ending y value between 0.0 and 1.0"/>' +
+        	    			'<div id="' + id + '_jGraduate_colorBoxEnd" class="colorBox"></div>' +
+			            	'<label id="' + id + '_jGraduate_endOpacity">100%</label>' +
+    	    	    	'</div>' +
+    	    	    '</div>' +
     	       	'</div>' +
         	    '<div class="jGraduate_OkCancel">' +
             		'<input type="button" id="' + id + '_jGraduate_Ok" class="jGraduate_Ok" value="OK"/>' +
             		'<input type="button" id="' + id + '_jGraduate_Cancel" class="jGraduate_Cancel" value="Cancel"/>' +
             	'</div>' +
-            	'<div id="' + id + '_jGraduate_stopPicker" class="jGraduate_stopPicker"></div>' +
-            '</div>');
+            	'<div id="' + id + '_jGraduate_stopPicker" class="jGraduate_stopPicker"></div>');
 			
 			// --------------
             // Set up all the SVG elements (the gradient, stops and rectangle)
