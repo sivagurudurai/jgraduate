@@ -104,14 +104,15 @@ jQuery.fn.jGraduate =
             			'<input type="text" id="' + id + '_jGraduate_y1" size="3" title="Enter starting y value between 0.0 and 1.0"/>' +
             		'</div>' +
             		'<div>' +
-	            		'<label>Color</label>' +
-    	        		'<input type="text" id="' + id + '_jGraduate_beginColor" size="6"/>' +
+//	            		'<label>Color</label>' +
+//    	        		'<input type="text" id="' + id + '_jGraduate_beginColor" size="6"/>' +
         	    		'<div id="' + id + '_jGraduate_colorBoxBegin" class="colorBox"></div>' +
+	            		'<label id="' + id + '_jGraduate_beginOpacity">100%</label>' +
         	    	'</div>' +
-        	    	'<div>' +
-	            		'<label>Opacity</label>' +
-    	        		'<input type="text" id="' + id + '_jGraduate_beginOpacity" size="4"/>' +
-    	        	'</div>' +
+//        	    	'<div>' +
+//	            		'<label>Opacity</label>' +
+//    	        		'<input type="text" id="' + id + '_jGraduate_beginOpacity" size="4"/>' +
+//    	        	'</div>' +
            		'</div>' +
             	'<label class="jGraduate_Form_Heading">End Stop</label>' +
             	'<div class="jGraduate_Form_Section">' +
@@ -122,14 +123,15 @@ jQuery.fn.jGraduate =
         		    	'<input type="text" id="' + id + '_jGraduate_y2" size="3" title="Enter ending y value between 0.0 and 1.0"/>' +
         		    '</div>' +
         		    '<div>' +
-	            		'<label>Color</label>' +
-    	        		'<input type="text" id="' + id + '_jGraduate_endColor" size="6"/>' +
+//	            		'<label>Color</label>' +
+//    	        		'<input type="text" id="' + id + '_jGraduate_endColor" size="6"/>' +
         	    		'<div id="' + id + '_jGraduate_colorBoxEnd" class="colorBox"></div>' +
+		            	'<label id="' + id + '_jGraduate_endOpacity">100%</label>' +
         	    	'</div>' +
-        	    	'<div>' +
-		            	'<label>Opacity</label>' +
-    		        	'<input type="text" id="' + id + '_jGraduate_endOpacity" size="4"/>' +
-    		        '</div>' +
+//        	    	'<div>' +
+//		            	'<label>Opacity</label>' +
+//    		        	'<input type="text" id="' + id + '_jGraduate_endOpacity" size="4"/>' +
+//    		        '</div>' +
     	       	'</div>' +
         	    '<div class="jGraduate_OkCancel">' +
             		'<input type="button" id="' + id + '_jGraduate_Ok" class="jGraduate_Ok" value="OK"/>' +
@@ -290,39 +292,19 @@ jQuery.fn.jGraduate =
             if(!beginColor) beginColor = '#000';
             beginColorBox = $('#'+id+'_jGraduate_colorBoxBegin');
             beginColorBox.css({'background-color':beginColor});
-            beginColorInput = $('#'+id+'_jGraduate_beginColor');
-            beginColorInput.val(beginColor);
-            beginColorInput.change( function() {
-            	stops[0].setAttribute('stop-color', this.value);
-				beginColorBox.css({'background-color':this.value});
-            });
 
             var beginOpacity = stops[0].getAttribute('stop-opacity');
             if(!beginOpacity) beginOpacity = '1.0';
-            beginOpacityInput = $('#'+id+'_jGraduate_beginOpacity');
-            beginOpacityInput.val(beginOpacity);
-            beginOpacityInput.change( function() {
-            	stops[0].setAttribute('stop-opacity', this.value);
-            });
+            $('#'+id+'jGraduate_beginOpacity').html( (beginOpacity*100)+'%' );
 
             var endColor = stops[stops.length-1].getAttribute('stop-color');
             if(!endColor) endColor = '#000';
             endColorBox = $('#'+id+'_jGraduate_colorBoxEnd');
             endColorBox.css({'background-color':endColor});
-            endColorInput = $('#'+id+'_jGraduate_endColor');
-            endColorInput.val(endColor);
-            endColorInput.change( function() {
-            	stops[1].setAttribute('stop-color', this.value);
-            	endColorBox.css({'background-color':this.value});
-            });
 
             var endOpacity = stops[stops.length-1].getAttribute('stop-opacity');
             if(!endOpacity) endOpacity = '1.0';
-            endOpacityInput = $('#'+id+'_jGraduate_endOpacity');
-            endOpacityInput.val(endOpacity);
-            endOpacityInput.change( function() {
-            	stops[1].setAttribute('stop-opacity', this.value);
-            });
+            $('#'+id+'jGraduate_endOpacity').html( (endOpacity*100)+'%' );
             
 			$('#'+id+'_jGraduate_colorBoxBegin').click(function() {
 				var colorbox = $(this);
@@ -334,8 +316,7 @@ jQuery.fn.jGraduate =
 						beginColor = '#' + this.settings.color.active.hex;
 						beginOpacity = this.settings.color.active.a/100;
 						colorbox.css('background', beginColor);
-						beginColorInput.val(beginColor);
-						beginOpacityInput.val(beginOpacity);
+						$('#'+id+'_jGraduate_beginOpacity').html((beginOpacity*100)+'%');
             			stops[0].setAttribute('stop-color', beginColor);
 						stops[0].setAttribute('stop-opacity', beginOpacity);
 						$('#'+id+'_jGraduate_stopPicker').hide();
@@ -351,8 +332,7 @@ jQuery.fn.jGraduate =
 						endColor = '#' + this.settings.color.active.hex;
 						endOpacity = this.settings.color.active.a/100;
 						colorbox.css('background', endColor);
-						beginColorInput.val(endColor);
-						beginOpacityInput.val(endOpacity);
+						$('#'+id+'_jGraduate_endOpacity').html((endOpacity*100)+'%');
             			stops[1].setAttribute('stop-color', endColor);
 						stops[1].setAttribute('stop-opacity', endOpacity);
 						$('#'+id+'_jGraduate_stopPicker').hide();
