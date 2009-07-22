@@ -122,6 +122,7 @@ jQuery.fn.jGraduate =
             		'<input type="button" id="' + id + '_jGraduate_Ok" class="jGraduate_Ok" value="OK"/>' +
             		'<input type="button" id="' + id + '_jGraduate_Cancel" class="jGraduate_Cancel" value="Cancel"/>' +
             	'</div>' +
+            	'<div class="jGraduate_LightBox"></div>' +
             	'<div id="' + id + '_jGraduate_stopPicker" class="jGraduate_stopPicker"></div>');
 			
 			// --------------
@@ -344,9 +345,10 @@ jQuery.fn.jGraduate =
             $('#'+id+'jGraduate_endOpacity').html( (endOpacity*100)+'%' );
             
 			$('#'+id+'_jGraduate_colorBoxBegin').click(function() {
+				$('div.jGraduate_LightBox').show();			
 				var colorbox = $(this);
 				color = new $.jPicker.Color({ hex: beginColor.substr(1), a:(parseFloat(beginOpacity)*100) });
-				$('#'+id+'_jGraduate_stopPicker').css({'left': 10, 'bottom': 5}).jPicker({
+				$('#'+id+'_jGraduate_stopPicker').css({'left': 100, 'bottom': 15}).jPicker({
 						images: { clientPath: "images/" },
 						color: { active: color, alphaSupport: true }
 					}, function(color){
@@ -356,13 +358,18 @@ jQuery.fn.jGraduate =
 						$('#'+id+'_jGraduate_beginOpacity').html((beginOpacity*100)+'%');
             			stops[0].setAttribute('stop-color', beginColor);
 						stops[0].setAttribute('stop-opacity', beginOpacity);
+						$('div.jGraduate_LightBox').hide();
 						$('#'+id+'_jGraduate_stopPicker').hide();
-					}, null, function() {$('#'+id+'_jGraduate_stopPicker').hide();});
+					}, null, function() {
+						$('div.jGraduate_LightBox').hide();
+						$('#'+id+'_jGraduate_stopPicker').hide();
+					});
 			});
 			$('#'+id+'_jGraduate_colorBoxEnd').click(function() {
+				$('div.jGraduate_LightBox').show();
 				var colorbox = $(this);
 				color = new $.jPicker.Color({ hex: endColor.substr(1), a:(parseFloat(endOpacity)*100) });
-				$('#'+id+'_jGraduate_stopPicker').css({'left': 10, 'top': 5}).jPicker({
+				$('#'+id+'_jGraduate_stopPicker').css({'left': 100, 'top': 15}).jPicker({
 						images: { clientPath: "images/" },
 						color: { active: color, alphaSupport: true }
 					}, function(color){
@@ -372,8 +379,12 @@ jQuery.fn.jGraduate =
 						$('#'+id+'_jGraduate_endOpacity').html((endOpacity*100)+'%');
             			stops[1].setAttribute('stop-color', endColor);
 						stops[1].setAttribute('stop-opacity', endOpacity);
+						$('div.jGraduate_LightBox').show();
 						$('#'+id+'_jGraduate_stopPicker').hide();
-					}, null, function() {$('#'+id+'_jGraduate_stopPicker').hide();});
+					}, null, function() {
+						$('div.jGraduate_LightBox').hide();
+						$('#'+id+'_jGraduate_stopPicker').hide();
+					});
 			});            
             
 			// --------------
