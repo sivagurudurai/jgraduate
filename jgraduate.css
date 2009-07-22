@@ -97,12 +97,8 @@ div.jGraduate_Form_Section {
 	margin: 2px;
 }
 
-/*
-.jGraduate_Form label, .jGraduate_Form input {
-	text-align: center;
+div.jGraduate_stopPicker {
+	position: absolute;
+	display: none;
+	background: #E8E8E8;
 }
-
-.jGraduate_Form > div {
-	text-align: center;
-}
-*/

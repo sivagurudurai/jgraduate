@@ -131,10 +131,12 @@ jQuery.fn.jGraduate =
     		        	'<input type="text" id="' + id + '_jGraduate_endOpacity" size="4"/>' +
     		        '</div>' +
     	       	'</div>' +
-        	    	'<div class="jGraduate_OkCancel">' +
+        	    '<div class="jGraduate_OkCancel">' +
             		'<input type="button" id="' + id + '_jGraduate_Ok" class="jGraduate_Ok" value="OK"/>' +
             		'<input type="button" id="' + id + '_jGraduate_Cancel" class="jGraduate_Cancel" value="Cancel"/>' +
-            	'</div></div>');
+            	'</div>' +
+            	'<div id="' + id + '_jGraduate_stopPicker" class="jGraduate_stopPicker"></div>' +
+            '</div>');
 			
 			// --------------
             // Set up all the SVG elements (the gradient, stops and rectangle)
@@ -321,6 +323,41 @@ jQuery.fn.jGraduate =
             endOpacityInput.change( function() {
             	stops[1].setAttribute('stop-opacity', this.value);
             });
+            
+			$('#'+id+'_jGraduate_colorBoxBegin').click(function() {
+				var colorbox = $(this);
+				color = new $.jPicker.Color({ hex: beginColor.substr(1), a:(parseFloat(beginOpacity)*100) });
+				$('#'+id+'_jGraduate_stopPicker').css({'left': 10, 'bottom': 5}).jPicker({
+						images: { clientPath: "images/" },
+						color: { active: color, alphaSupport: true }
+					}, function(color){
+						beginColor = '#' + this.settings.color.active.hex;
+						beginOpacity = this.settings.color.active.a/100;
+						colorbox.css('background', beginColor);
+						beginColorInput.val(beginColor);
+						beginOpacityInput.val(beginOpacity);
+            			stops[0].setAttribute('stop-color', beginColor);
+						stops[0].setAttribute('stop-opacity', beginOpacity);
+						$('#'+id+'_jGraduate_stopPicker').hide();
+					}, null, function() {$('#'+id+'_jGraduate_stopPicker').hide();});
+			});
+			$('#'+id+'_jGraduate_colorBoxEnd').click(function() {
+				var colorbox = $(this);
+				color = new $.jPicker.Color({ hex: endColor.substr(1), a:(parseFloat(endOpacity)*100) });
+				$('#'+id+'_jGraduate_stopPicker').css({'left': 10, 'top': 5}).jPicker({
+						images: { clientPath: "images/" },
+						color: { active: color, alphaSupport: true }
+					}, function(color){
+						endColor = '#' + this.settings.color.active.hex;
+						endOpacity = this.settings.color.active.a/100;
+						colorbox.css('background', endColor);
+						beginColorInput.val(endColor);
+						beginOpacityInput.val(endOpacity);
+            			stops[1].setAttribute('stop-color', endColor);
+						stops[1].setAttribute('stop-opacity', endOpacity);
+						$('#'+id+'_jGraduate_stopPicker').hide();
+					}, null, function() {$('#'+id+'_jGraduate_stopPicker').hide();});
+			});            
             
 			// --------------
             
