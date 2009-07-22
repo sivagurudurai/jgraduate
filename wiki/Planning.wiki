@@ -20,9 +20,9 @@ This jQuery plugin will allow a user to pick a gradient and return it as either:
 This version of jGraduate will be the first used in SVG-edit.
 
   * include jPicker 1.0.8 with jGraduate (done)
-  * remove opacity and color edit boxes from the form
-  * clicking the stop's color box will let you choose the color and opacity from jPicker
-  * dragging a stop on the swatch will automatically update the coordinate values and the gradient
+  * remove opacity and color edit boxes from the form (done)
+  * clicking the stop's color box will let you choose the color and opacity from jPicker (done)
+  * dragging a stop on the swatch will automatically update the coordinate values and the gradient (done)
   * add an overall opacity to the gradient dialog
   * nest the gradient dialog in a jQuery tabbing pane (done)
   * first tab will be "Solid Color" and will embed jPicker (done)
