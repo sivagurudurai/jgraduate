@@ -182,6 +182,7 @@ jQuery.fn.jGraduate =
             // stop visuals created here
             var beginStop = svg.appendChild(document.createElementNS(ns.svg, 'image'));
             beginStop.id = "stop1";
+            beginStop.setAttribute('class', 'stop');
             beginStop.setAttributeNS(ns.xlink, 'href', 'images/mappoint.gif');
             beginStop.setAttributeNS(ns.xlink, "title", "Begin Stop");
             beginStop.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
@@ -190,9 +191,11 @@ jQuery.fn.jGraduate =
             beginStop.setAttribute('height', 15);
             beginStop.setAttribute('x', MARGINX + SIZEX*x1 - STOP_RADIUS);
             beginStop.setAttribute('y', MARGINY + SIZEY*y1 - STOP_RADIUS);
-
+            beginStop.setAttribute('cursor', 'move');
+            
             var endStop = svg.appendChild(document.createElementNS(ns.svg, 'image'));
             endStop.id = "stop2";
+            endStop.setAttribute('class', 'stop');
             endStop.setAttributeNS(ns.xlink, 'href', 'images/mappoint.gif');
             endStop.setAttributeNS(ns.xlink, "title", "End Stop");
             endStop.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
@@ -201,6 +204,7 @@ jQuery.fn.jGraduate =
             endStop.setAttribute('height', 15);
             endStop.setAttribute('x', MARGINX + SIZEX*x2 - STOP_RADIUS);
             endStop.setAttribute('y', MARGINY + SIZEY*y2 - STOP_RADIUS);
+            endStop.setAttribute('cursor', 'move');
             
             // bind GUI elements
             $('#'+id+'_jGraduate_Ok').bind('click', function() {
@@ -264,11 +268,62 @@ jQuery.fn.jGraduate =
             // if there are not at least two stops, then 
             if (numstops < 2) {
 	            while (numstops < 2) {
-    	        	$this.linearGradient.appendChild( document.createElementNS(ns.svg, 'stop') );
+    	        	$this.paint.linearGradient.appendChild( document.createElementNS(ns.svg, 'stop') );
         	    	++numstops;
             	}
-            	stops = $this.linearGradient.getElementsByTagNameNS(ns.svg, 'stop');
-            }            
+            	stops = $this.paint.linearGradient.getElementsByTagNameNS(ns.svg, 'stop');
+            }
+            
+			// handle dragging the stop around the swatch
+            var draggingStop = null;
+            var startx = -1, starty = -1;
+            $('image.stop').mousedown(function(evt) {
+            	draggingStop = this;
+            	startx = evt.clientX;
+            	starty = evt.clientY;
+            	evt.preventDefault();
+            });
+            $('#'+id+'_jgraduate_svg').mousemove(function(evt) {
+            	if (null != draggingStop) {
+            		var dx = evt.clientX - startx;
+            		var dy = evt.clientY - starty;
+            		startx += dx;
+            		starty += dy;
+            		var x = parseFloat(draggingStop.getAttribute('x')) + dx;
+            		var y = parseFloat(draggingStop.getAttribute('y')) + dy;
+
+					// clamp stop to the swatch
+            		if (x < MARGINX - STOP_RADIUS) x = MARGINX - STOP_RADIUS;
+            		if (y < MARGINY - STOP_RADIUS) y = MARGINY - STOP_RADIUS;
+            		if (x > MARGINX + SIZEX - STOP_RADIUS) x = MARGINX + SIZEX - STOP_RADIUS;
+            		if (y > MARGINY + SIZEY - STOP_RADIUS) y = MARGINY + SIZEY - STOP_RADIUS;
+            		            		
+            		draggingStop.setAttribute('x', x);
+            		draggingStop.setAttribute('y', y);
+
+					// calculate stop offset            		
+            		var fracx = (x - MARGINX + STOP_RADIUS)/SIZEX;
+            		var fracy = (y - MARGINY + STOP_RADIUS)/SIZEY;
+            		
+            		if (draggingStop.id == 'stop1') {
+            			x1Input.val(fracx);
+            			y1Input.val(fracy);
+            			$this.paint.linearGradient.setAttribute('x1', fracx);
+            			$this.paint.linearGradient.setAttribute('y1', fracy);
+            		}
+            		else {
+            			x2Input.val(fracx);
+            			y2Input.val(fracy);
+            			$this.paint.linearGradient.setAttribute('x2', fracx);
+            			$this.paint.linearGradient.setAttribute('y2', fracy);
+            		}
+            		
+            		evt.preventDefault();
+            	}
+            });
+            $('#'+id+'_jgraduate_svg').mouseup(function(evt) {
+            	draggingStop = null;
+            });
             
             var beginColor = stops[0].getAttribute('stop-color');
             if(!beginColor) beginColor = '#000';
@@ -365,18 +420,5 @@ jQuery.fn.jGraduate =
 
 			$this.css({'left': pos.left, 'top': pos.top});
 			$this.show();
-			
-/*
-            var getStopRGB = function(stop) {
-            	var color = stop.getPresentationAttribute('stop-color').rgbColor,
-            		r = color.red.getFloatValue(1),
-            		g = color.green.getFloatValue(1),
-            		b = color.blue.getFloatValue(1);
-            	return [r,g,b];
-            };
-            var getOppositeColor = function(rgb) {
-            	return [255-rgb[0], 255-rgb[1], 255-rgb[2]];
-            };                       
-*/
 		});
 	};
