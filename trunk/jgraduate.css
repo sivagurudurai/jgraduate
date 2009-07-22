@@ -112,6 +112,17 @@ div.jGraduate_Form_Section {
 	text-align: center;
 }
 
+div.jGraduate_LightBox {
+	position: fixed;
+	top: 0px;
+	left: 0px;
+	right: 0px;
+	bottom: 0px;
+	background-color: #000;
+	opacity: 0.5;
+	display: none;
+}
+
 div.jGraduate_stopPicker {
 	position: absolute;
 	display: none;
