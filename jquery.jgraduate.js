@@ -344,6 +344,8 @@ jQuery.fn.jGraduate =
             if(!endOpacity) endOpacity = '1.0';
             $('#'+id+'jGraduate_endOpacity').html( (endOpacity*100)+'%' );
             
+            window.status = 'foo!';
+            
 			$('#'+id+'_jGraduate_colorBoxBegin').click(function() {
 				$('div.jGraduate_LightBox').show();			
 				var colorbox = $(this);
