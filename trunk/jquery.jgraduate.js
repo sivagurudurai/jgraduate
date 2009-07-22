@@ -126,7 +126,7 @@ jQuery.fn.jGraduate =
 			
 			// --------------
             // Set up all the SVG elements (the gradient, stops and rectangle)
-            var MAX = 276, MARGINX = 10, MARGINY = 10, STOP_RADIUS = 4, 
+            var MAX = 276, MARGINX = 10, MARGINY = 10, STOP_RADIUS = 15/2,
             	SIZEX = MAX - 2*MARGINX, SIZEY = MAX - 2*MARGINY;
             var container = document.getElementById(id+'_jGraduate_Swatch');
             var svg = container.appendChild(document.createElementNS(ns.svg, 'svg'));
@@ -180,29 +180,27 @@ jQuery.fn.jGraduate =
             rect.setAttribute('fill', 'url(#'+id+'_jgraduate_grad)');
             
             // stop visuals created here
-            var beginStop = svg.appendChild(document.createElementNS(ns.svg, 'circle'));
+            var beginStop = svg.appendChild(document.createElementNS(ns.svg, 'image'));
             beginStop.id = "stop1";
+            beginStop.setAttributeNS(ns.xlink, 'href', 'images/mappoint.gif');
             beginStop.setAttributeNS(ns.xlink, "title", "Begin Stop");
             beginStop.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
             	document.createTextNode("Begin Stop"));
-            	
-            beginStop.setAttribute('r', STOP_RADIUS);
-            beginStop.setAttribute('stroke-width', 1);
-            beginStop.setAttribute('fill', 'green');
-            beginStop.setAttribute('stroke', 'black');
-            beginStop.setAttribute('cx', MARGINX + SIZEX*x1);
-            beginStop.setAttribute('cy', MARGINY + SIZEY*y1);
-            var endStop = svg.appendChild(document.createElementNS(ns.svg, 'circle'));
+            beginStop.setAttribute('width', 15);
+            beginStop.setAttribute('height', 15);
+            beginStop.setAttribute('x', MARGINX + SIZEX*x1 - STOP_RADIUS);
+            beginStop.setAttribute('y', MARGINY + SIZEY*y1 - STOP_RADIUS);
+
+            var endStop = svg.appendChild(document.createElementNS(ns.svg, 'image'));
             endStop.id = "stop2";
+            endStop.setAttributeNS(ns.xlink, 'href', 'images/mappoint.gif');
             endStop.setAttributeNS(ns.xlink, "title", "End Stop");
             endStop.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
             	document.createTextNode("End Stop"));
-            endStop.setAttribute('r', STOP_RADIUS);
-            endStop.setAttribute('stroke-width', 2);
-            endStop.setAttribute('stroke', 'black');
-            endStop.setAttribute('fill', 'red');
-            endStop.setAttribute('cx', MARGINX+SIZEX*x2);
-            endStop.setAttribute('cy', MARGINY+SIZEY*y2);
+            endStop.setAttribute('width', 15);
+            endStop.setAttribute('height', 15);
+            endStop.setAttribute('x', MARGINX + SIZEX*x2 - STOP_RADIUS);
+            endStop.setAttribute('y', MARGINY + SIZEY*y2 - STOP_RADIUS);
             
             // bind GUI elements
             $('#'+id+'_jGraduate_Ok').bind('click', function() {
@@ -222,7 +220,7 @@ jQuery.fn.jGraduate =
             		this.value = 0.0; 
             	}
             	$this.paint.linearGradient.setAttribute('x1', this.value);
-            	beginStop.setAttribute('cx', MARGINX + SIZEX*this.value);
+            	beginStop.setAttribute('x', MARGINX + SIZEX*this.value - STOP_RADIUS);
             });
 
             var y1 = $this.paint.linearGradient.getAttribute('y1');
@@ -234,7 +232,7 @@ jQuery.fn.jGraduate =
             		this.value = 0.0; 
             	}
             	$this.paint.linearGradient.setAttribute('y1', this.value);
-            	beginStop.setAttribute('cy', MARGINY + SIZEY*this.value);
+            	beginStop.setAttribute('y', MARGINY + SIZEY*this.value - STOP_RADIUS);
             });
             
             var x2 = $this.paint.linearGradient.getAttribute('x2');
@@ -246,7 +244,7 @@ jQuery.fn.jGraduate =
             		this.value = 1.0;
             	}
             	$this.paint.linearGradient.setAttribute('x2', this.value);
-            	endStop.setAttribute('cx', MARGINX + SIZEX*this.value);
+            	endStop.setAttribute('x', MARGINX + SIZEX*this.value - STOP_RADIUS);
             });
             
             var y2 = $this.paint.linearGradient.getAttribute('y2');
@@ -258,7 +256,7 @@ jQuery.fn.jGraduate =
             		this.value = 0.0;
             	}
             	$this.paint.linearGradient.setAttribute('y2', this.value);
-            	endStop.setAttribute('cy', MARGINY + SIZEY*this.value);
+            	endStop.setAttribute('y', MARGINY + SIZEY*this.value - STOP_RADIUS);
             });            
             
             var stops = $this.paint.linearGradient.getElementsByTagNameNS(ns.svg, 'stop');
