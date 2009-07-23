@@ -286,7 +286,9 @@ jQuery.fn.jGraduate =
 			// handle dragging the stop around the swatch
             var draggingStop = null;
             var startx = -1, starty = -1;
-            $('image.stop').mousedown(function(evt) {
+            // for whatever reason, Opera does not allow this jQuery selector
+//            $('image.stop').mousedown(function(evt) {
+            $('.stop').mousedown(function(evt) {
             	draggingStop = this;
             	startx = evt.clientX;
             	starty = evt.clientY;
