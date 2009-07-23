@@ -28,7 +28,7 @@
 
  *
  */
-ns = { svg: 'http://www.w3.org/2000/svg', xlink: 'http://www.w3.org/1999/xlink' };
+var ns = { svg: 'http://www.w3.org/2000/svg', xlink: 'http://www.w3.org/1999/xlink' };
 if(!window.console) {
   window.console = new function() {
     this.log = function(str) {};
@@ -185,7 +185,7 @@ jQuery.fn.jGraduate =
             rect.setAttribute('fill', 'url(#'+id+'_jgraduate_grad)');
             
             // stop visuals created here
-            var beginStop = svg.appendChild(document.createElementNS(ns.svg, 'image'));
+            var beginStop = document.createElementNS(ns.svg, 'image');
             beginStop.id = "stop1";
             beginStop.setAttribute('class', 'stop');
             beginStop.setAttributeNS(ns.xlink, 'href', 'images/mappoint.gif');
@@ -197,8 +197,11 @@ jQuery.fn.jGraduate =
             beginStop.setAttribute('x', MARGINX + SIZEX*x1 - STOP_RADIUS);
             beginStop.setAttribute('y', MARGINY + SIZEY*y1 - STOP_RADIUS);
             beginStop.setAttribute('cursor', 'move');
+            // must append only after setting all attributes due to Webkit Bug 27952
+            // https://bugs.webkit.org/show_bug.cgi?id=27592
+            beginStop = svg.appendChild(beginStop);
             
-            var endStop = svg.appendChild(document.createElementNS(ns.svg, 'image'));
+            var endStop = document.createElementNS(ns.svg, 'image');
             endStop.id = "stop2";
             endStop.setAttribute('class', 'stop');
             endStop.setAttributeNS(ns.xlink, 'href', 'images/mappoint.gif');
@@ -210,6 +213,7 @@ jQuery.fn.jGraduate =
             endStop.setAttribute('x', MARGINX + SIZEX*x2 - STOP_RADIUS);
             endStop.setAttribute('y', MARGINY + SIZEY*y2 - STOP_RADIUS);
             endStop.setAttribute('cursor', 'move');
+            endStop = svg.appendChild(endStop);
             
             // bind GUI elements
             $('#'+id+'_jGraduate_Ok').bind('click', function() {
