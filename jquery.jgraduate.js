@@ -351,6 +351,7 @@ jQuery.fn.jGraduate =
 				var colorbox = $(this);
 				color = new $.jPicker.Color({ hex: beginColor.substr(1), a:(parseFloat(beginOpacity)*100) });
 				$('#'+id+'_jGraduate_stopPicker').css({'left': 100, 'bottom': 15}).jPicker({
+						window: { title: "Pick the start color and opacity for the gradient" },
 						images: { clientPath: "images/" },
 						color: { active: color, alphaSupport: true }
 					}, function(color){
@@ -372,6 +373,7 @@ jQuery.fn.jGraduate =
 				var colorbox = $(this);
 				color = new $.jPicker.Color({ hex: endColor.substr(1), a:(parseFloat(endOpacity)*100) });
 				$('#'+id+'_jGraduate_stopPicker').css({'left': 100, 'top': 15}).jPicker({
+						window: { title: "Pick the end color and opacity for the gradient" },
 						images: { clientPath: "images/" },
 						color: { active: color, alphaSupport: true }
 					}, function(color){
