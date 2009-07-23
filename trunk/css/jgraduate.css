@@ -6,6 +6,16 @@
  * Licensed under the Apache License Version 2
  */
 
+h2.jGraduate_Title {
+  font-family: Arial, Helvetica, Sans-Serif;
+  font-size: 11px !important;
+  font-weight: bold;
+  margin: -5px 0px -8px 0px;
+  padding: 0px;
+  text-align: center;
+  width: 276px;
+}
+
 .jGraduate_Picker {
 	border-style: solid;
 	border-color: lightgrey black black lightgrey;

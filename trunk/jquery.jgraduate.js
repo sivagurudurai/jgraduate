@@ -62,6 +62,7 @@ jQuery.fn.jGraduate =
                 paint: $arguments[0] || null,
                 okCallback: $.isFunction($arguments[1]) && $arguments[1] || null,
                 cancelCallback: $.isFunction($arguments[2]) && $arguments[2] || null,
+                pickerTitle: $arguments[3] || "Drag markers to pick a paint",
               });
 
 			var mode = "solidColor",
@@ -93,7 +94,10 @@ jQuery.fn.jGraduate =
 			var colPicker = $(idref + '> .jGraduate_colPick');
 			var lgPicker = $(idref + '> .jGraduate_lgPick');
 			
-            lgPicker.html('<div id="' + id + '_jGraduate_Swatch" class="jGraduate_Swatch"></div>' + 
+            lgPicker.html(
+            	'<div id="' + id + '_jGraduate_Swatch" class="jGraduate_Swatch">' +
+            		'<h2 class="jGraduate_Title">' + $this.pickerTitle + '</h2>' +
+            	'</div>' + 
             	'<div class="jGraduate_Form">' +
             		'<div class="jGraduate_StopSection">' +
 	            		'<label class="jGraduate_Form_Heading">Begin Stop</label>' +
@@ -395,6 +399,7 @@ jQuery.fn.jGraduate =
             
 			colPicker.jPicker(
 				{
+					window: { title: $this.pickerTitle },
 					images: { clientPath: "images/" },
 					color: { active: $this.paint.solidColor, alphaSupport: true }
 				},
