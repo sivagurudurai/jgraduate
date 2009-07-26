@@ -97,29 +97,35 @@ jQuery.fn.jGraduate =
             lgPicker.html(
             	'<div id="' + id + '_jGraduate_Swatch" class="jGraduate_Swatch">' +
             		'<h2 class="jGraduate_Title">' + $this.pickerTitle + '</h2>' +
+            		'<div id="' + id + '_jGraduate_GradContainer" class="jGraduate_GradContainer"></div>' +
+            		'<div class="jGraduate_Opacity" title="Click to set overall opacity of the gradient paint"></div>' +
             	'</div>' + 
             	'<div class="jGraduate_Form">' +
             		'<div class="jGraduate_StopSection">' +
 	            		'<label class="jGraduate_Form_Heading">Begin Stop</label>' +
     	        		'<div class="jGraduate_Form_Section">' +
-        	    			'<label>x</label>' +
+        	    			'<label>x:</label>' +
             				'<input type="text" id="' + id + '_jGraduate_x1" size="3" title="Enter starting x value between 0.0 and 1.0"/>' +
-            				'<label>y</label>' +
+            				'<label> y:</label>' +
             				'<input type="text" id="' + id + '_jGraduate_y1" size="3" title="Enter starting y value between 0.0 and 1.0"/>' +
 	        	    		'<div id="' + id + '_jGraduate_colorBoxBegin" class="colorBox"></div>' +
-		            		'<label id="' + id + '_jGraduate_beginOpacity">100%</label>' +
+		            		'<label id="' + id + '_jGraduate_beginOpacity"> 100%</label>' +
         	   			'</div>' +
         	   		'</div>' +
         	   		'<div class="jGraduate_StopSection">' +
 	            		'<label class="jGraduate_Form_Heading">End Stop</label>' +
     	        		'<div class="jGraduate_Form_Section">' +
-	    	        		'<label>x</label>' +
+	    	        		'<label>x:</label>' +
 		    	        	'<input type="text" id="' + id + '_jGraduate_x2" size="3" title="Enter ending x value between 0.0 and 1.0"/>' +
-    		    	    	'<label>y</label>' +
+    		    	    	'<label> y:</label>' +
         		    		'<input type="text" id="' + id + '_jGraduate_y2" size="3" title="Enter ending y value between 0.0 and 1.0"/>' +
         	    			'<div id="' + id + '_jGraduate_colorBoxEnd" class="colorBox"></div>' +
 			            	'<label id="' + id + '_jGraduate_endOpacity">100%</label>' +
     	    	    	'</div>' +
+    	    	    '</div>' +
+    	    	    '<div class="jGraduate_OpacityField">' +
+    	    	    	'<label class="jGraduate_OpacityLabel">A: </label>' +
+    	    	    	'<input type="text" class="jGraduate_OpacityInput" size="3"/>%' +
     	    	    '</div>' +
     	       	'</div>' +
         	    '<div class="jGraduate_OkCancel">' +
@@ -133,7 +139,8 @@ jQuery.fn.jGraduate =
             // Set up all the SVG elements (the gradient, stops and rectangle)
             var MAX = 276, MARGINX = 10, MARGINY = 10, STOP_RADIUS = 15/2,
             	SIZEX = MAX - 2*MARGINX, SIZEY = MAX - 2*MARGINY;
-            var container = document.getElementById(id+'_jGraduate_Swatch');
+//            var container = document.getElementById(id+'_jGraduate_Swatch');
+            var container = document.getElementById(id+'_jGraduate_GradContainer');
             var svg = container.appendChild(document.createElementNS(ns.svg, 'svg'));
             svg.id = id+'_jgraduate_svg';            
             svg.setAttribute('width', MAX);
@@ -286,8 +293,7 @@ jQuery.fn.jGraduate =
 			// handle dragging the stop around the swatch
             var draggingStop = null;
             var startx = -1, starty = -1;
-            // for whatever reason, Opera does not allow this jQuery selector
-//            $('image.stop').mousedown(function(evt) {
+            // for whatever reason, Opera does not allow $('image.stop') here
             $('.stop').mousedown(function(evt) {
             	draggingStop = this;
             	startx = evt.clientX;
