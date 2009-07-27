@@ -10,15 +10,14 @@ h2.jGraduate_Title {
   font-family: Arial, Helvetica, Sans-Serif;
   font-size: 11px !important;
   font-weight: bold;
-  margin: -5px 0px -8px 0px;
+  margin: -13px 0px 0px 0px;
   padding: 0px;
   text-align: center;
-  width: 276px;
 }
 
 .jGraduate_Picker {
-  font-family: Arial, Helvetica, Sans-Serif;
-  font-size: 12px;
+	font-family: Arial, Helvetica, Sans-Serif;
+	font-size: 12px;
 	border-style: solid;
 	border-color: lightgrey black black lightgrey;
 	border-width: 1px;
@@ -65,11 +64,18 @@ li.jGraduate_tab_current {
 
 div.jGraduate_Swatch {
 	display: inline-block;
+	margin: 8px;
+}
+div.jGraduate_GradContainer {
+	border: 2px inset #EEE;
+	background-image: url(../images/map-opacity.png); 
+	background-position: 0px 0px;
+	height: 256px;
 }
 
 div.jGraduate_Opacity {
 	border: 2px inset #eee;
-	margin: 2px 8px 8px 10px;
+	margin-top: 14px;
 	background-color: black;
 	background-image: url(../images/Maps.png);
 	background-position: 0px -2816px;
