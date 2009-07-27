@@ -73,6 +73,12 @@ div.jGraduate_GradContainer {
 	height: 256px;
 }
 
+.jGraduate_AlphaArrows {
+	position: absolute;
+	margin-top: -10px;
+	margin-left: 250.5px;
+}
+
 div.jGraduate_Opacity {
 	border: 2px inset #eee;
 	margin-top: 14px;

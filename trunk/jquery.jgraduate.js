@@ -98,7 +98,9 @@ jQuery.fn.jGraduate =
             	'<div id="' + id + '_jGraduate_Swatch" class="jGraduate_Swatch">' +
             		'<h2 class="jGraduate_Title">' + $this.pickerTitle + '</h2>' +
             		'<div id="' + id + '_jGraduate_GradContainer" class="jGraduate_GradContainer"></div>' +
-            		'<div class="jGraduate_Opacity" title="Click to set overall opacity of the gradient paint"></div>' +
+            		'<div id="' + id + '_jGraduate_Opacity" class="jGraduate_Opacity" title="Click to set overall opacity of the gradient paint">' +
+            			'<img id="' + id + '_jGraduate_AlphaArrows" class="jGraduate_AlphaArrows" src="images/rangearrows2.gif"></img>' +
+            		'</div>' +
             	'</div>' + 
             	'<div class="jGraduate_Form">' +
             		'<div class="jGraduate_StopSection">' +
@@ -125,7 +127,7 @@ jQuery.fn.jGraduate =
     	    	    '</div>' +
     	    	    '<div class="jGraduate_OpacityField">' +
     	    	    	'<label class="jGraduate_OpacityLabel">A: </label>' +
-    	    	    	'<input type="text" class="jGraduate_OpacityInput" size="3"/>%' +
+    	    	    	'<input type="text" id="' + id + '_jGraduate_OpacityInput" class="jGraduate_OpacityInput" size="3" value="100"/>%' +
     	    	    '</div>' +
     	       	'</div>' +
         	    '<div class="jGraduate_OkCancel">' +
@@ -176,7 +178,7 @@ jQuery.fn.jGraduate =
 			var y2 = parseFloat($this.paint.linearGradient.getAttribute('y2')||0.0);
 			
             var rect = document.createElementNS(ns.svg, 'rect');
-            rect.id = 'jgraduate_rect';
+            rect.id = id + '_jgraduate_rect';
             rect.setAttribute('x', MARGINX);
             rect.setAttribute('y', MARGINY);
             rect.setAttribute('width', SIZEY);
@@ -187,7 +189,7 @@ jQuery.fn.jGraduate =
             
             // stop visuals created here
             var beginStop = document.createElementNS(ns.svg, 'image');
-            beginStop.id = "stop1";
+            beginStop.id = id + "_stop1";
             beginStop.setAttribute('class', 'stop');
             beginStop.setAttributeNS(ns.xlink, 'href', 'images/mappoint.gif');
             beginStop.setAttributeNS(ns.xlink, "title", "Begin Stop");
@@ -203,7 +205,7 @@ jQuery.fn.jGraduate =
             beginStop = svg.appendChild(beginStop);
             
             var endStop = document.createElementNS(ns.svg, 'image');
-            endStop.id = "stop2";
+            endStop.id = id + "_stop2";
             endStop.setAttribute('class', 'stop');
             endStop.setAttributeNS(ns.xlink, 'href', 'images/mappoint.gif');
             endStop.setAttributeNS(ns.xlink, "title", "End Stop");
@@ -284,6 +286,36 @@ jQuery.fn.jGraduate =
             	stops = $this.paint.linearGradient.getElementsByTagNameNS(ns.svg, 'stop');
             }
             
+            var setOpacitySlider = function(e, div) {
+            	var offset = div.offset();
+            	var x = (e.pageX - offset.left - parseInt(div.css('border-left-width')));
+            	if (x > 255) x = 255;
+            	if (x < 0) x = 0;
+            	var posx = x - 4.5;
+            	$('#' + id + '_jGraduate_AlphaArrows').css({'margin-left':posx});
+            	$('#' + id + '_jgraduate_rect').attr('fill-opacity', x/255);
+            	$('#' + id + '_jGraduate_OpacityInput').val(parseInt(x*100/255));
+            };
+            
+            // handle dragging on the opacity slider
+            var bSlidingOpacity = false;
+            $('.jGraduate_Opacity').mousedown(function(evt) {
+            	setOpacitySlider(evt, $(this));
+            	bSlidingOpacity = true;
+            	evt.preventDefault();
+            });
+            $('.jGraduate_Opacity').mousemove(function(evt) {
+            	if (bSlidingOpacity) {
+            		setOpacitySlider(evt, $(this));
+            		evt.preventDefault();
+            	}
+            });
+            $('.jGraduate_Opacity').mouseup(function(evt) {
+            	setOpacitySlider(evt, $(this));
+            	bSlidingOpacity = false;
+            	evt.preventDefault();
+            });
+            
 			// handle dragging the stop around the swatch
             var draggingStop = null;
             var startx = -1, starty = -1;
@@ -353,8 +385,6 @@ jQuery.fn.jGraduate =
             var endOpacity = stops[stops.length-1].getAttribute('stop-opacity');
             if(!endOpacity) endOpacity = '1.0';
             $('#'+id+'jGraduate_endOpacity').html( (endOpacity*100)+'%' );
-            
-            window.status = 'foo!';
             
 			$('#'+id+'_jGraduate_colorBoxBegin').click(function() {
 				$('div.jGraduate_LightBox').show();			
