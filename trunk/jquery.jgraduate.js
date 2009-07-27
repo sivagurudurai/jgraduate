@@ -137,7 +137,7 @@ jQuery.fn.jGraduate =
 			
 			// --------------
             // Set up all the SVG elements (the gradient, stops and rectangle)
-            var MAX = 276, MARGINX = 10, MARGINY = 10, STOP_RADIUS = 15/2,
+            var MAX = 256, MARGINX = 0, MARGINY = 0, STOP_RADIUS = 15/2,
             	SIZEX = MAX - 2*MARGINX, SIZEY = MAX - 2*MARGINY;
 //            var container = document.getElementById(id+'_jGraduate_Swatch');
             var container = document.getElementById(id+'_jGraduate_GradContainer');
@@ -175,21 +175,15 @@ jQuery.fn.jGraduate =
 			var x2 = parseFloat($this.paint.linearGradient.getAttribute('x2')||1.0);
 			var y2 = parseFloat($this.paint.linearGradient.getAttribute('y2')||0.0);
 			
-            var brect = svg.appendChild(document.createElementNS(ns.svg, 'rect'));
-            brect.setAttribute('x', MARGINX);
-            brect.setAttribute('y', MARGINY);
-            brect.setAttribute('width', SIZEX);
-            brect.setAttribute('height', SIZEX);
-            brect.setAttribute('stroke', 'black');
-            brect.setAttribute('fill', 'none');
-
-            var rect = svg.appendChild(document.createElementNS(ns.svg, 'rect'));
+            var rect = document.createElementNS(ns.svg, 'rect');
             rect.id = 'jgraduate_rect';
             rect.setAttribute('x', MARGINX);
             rect.setAttribute('y', MARGINY);
             rect.setAttribute('width', SIZEY);
             rect.setAttribute('height', SIZEY);
             rect.setAttribute('fill', 'url(#'+id+'_jgraduate_grad)');
+            rect.setAttribute('fill-opacity', '1.0');
+            rect = svg.appendChild(rect);
             
             // stop visuals created here
             var beginStop = document.createElementNS(ns.svg, 'image');
