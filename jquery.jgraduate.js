@@ -368,7 +368,7 @@ jQuery.fn.jGraduate =
 						beginColor = '#' + this.settings.color.active.hex;
 						beginOpacity = this.settings.color.active.a/100;
 						colorbox.css('background', beginColor);
-						$('#'+id+'_jGraduate_beginOpacity').html((beginOpacity*100)+'%');
+						$('#'+id+'_jGraduate_beginOpacity').html(parseInt(beginOpacity*100)+'%');
             			stops[0].setAttribute('stop-color', beginColor);
 						stops[0].setAttribute('stop-opacity', beginOpacity);
 						$('div.jGraduate_LightBox').hide();
@@ -390,10 +390,10 @@ jQuery.fn.jGraduate =
 						endColor = '#' + this.settings.color.active.hex;
 						endOpacity = this.settings.color.active.a/100;
 						colorbox.css('background', endColor);
-						$('#'+id+'_jGraduate_endOpacity').html((endOpacity*100)+'%');
+						$('#'+id+'_jGraduate_endOpacity').html(parseInt(endOpacity*100)+'%');
             			stops[1].setAttribute('stop-color', endColor);
 						stops[1].setAttribute('stop-opacity', endOpacity);
-						$('div.jGraduate_LightBox').show();
+						$('div.jGraduate_LightBox').hide();
 						$('#'+id+'_jGraduate_stopPicker').hide();
 					}, null, function() {
 						$('div.jGraduate_LightBox').hide();
