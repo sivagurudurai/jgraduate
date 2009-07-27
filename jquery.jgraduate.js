@@ -11,9 +11,9 @@
 - the Paint object is:
 	{
 		// object describing the color picked used by jPicker
-		solidColor: { },
+		solidColor: { hex, },
 		// DOM node for the linear gradient 
-		linearGradient
+		linearGradient: { grad, a, 
 	}
 - only one of solidColor and linearGradient must be non-null
 
@@ -79,6 +79,7 @@ jQuery.fn.jGraduate =
 				$this.paint.solidColor = new $.jPicker.Color({ hex: 'ffffff', a: 100 });
 			}
 			else if ($this.paint.solidColor != null && $this.paint.linearGradient == null) {
+				$this.paint.linearGradient = { grad: null, a: 100 };
 			}
 			else {
 				return null;
@@ -149,9 +150,9 @@ jQuery.fn.jGraduate =
             svg.setAttribute('height', MAX);
 			svg.setAttribute("xmlns", ns.svg);
 			
-			if ($this.paint.linearGradient) {
-				$this.paint.linearGradient = svg.appendChild( document.importNode($this.paint.linearGradient, true) );
-				$this.paint.linearGradient.id = id+'_jgraduate_grad';
+			if ($this.paint.linearGradient.grad) {
+				$this.paint.linearGradient.grad = svg.appendChild( document.importNode($this.paint.linearGradient.grad, true) );
+				$this.paint.linearGradient.grad.id = id+'_jgraduate_grad';
 			}
 			else {
 				var grad = svg.appendChild(document.createElementNS(ns.svg, 'linearGradient'));
@@ -169,13 +170,19 @@ jQuery.fn.jGraduate =
 				end.setAttribute('offset', '1.0');
 				end.setAttribute('stop-color', '#ff0');
 			
-				$this.paint.linearGradient = grad;
+				$this.paint.linearGradient.grad = grad;
 			}
+
+			var gradalpha = $this.paint.linearGradient.a;
+            $('#' + id + '_jGraduate_OpacityInput').val(gradalpha);
+			var posx = parseInt(255*(gradalpha/100)) - 4.5;
+            $('#' + id + '_jGraduate_AlphaArrows').css({'margin-left':posx});
+            $('#' + id + '_jgraduate_rect').attr('fill-opacity', gradalpha/100);
 			
-			var x1 = parseFloat($this.paint.linearGradient.getAttribute('x1')||0.0);
-			var y1 = parseFloat($this.paint.linearGradient.getAttribute('y1')||0.0);
-			var x2 = parseFloat($this.paint.linearGradient.getAttribute('x2')||1.0);
-			var y2 = parseFloat($this.paint.linearGradient.getAttribute('y2')||0.0);
+			var x1 = parseFloat($this.paint.linearGradient.grad.getAttribute('x1')||0.0);
+			var y1 = parseFloat($this.paint.linearGradient.grad.getAttribute('y1')||0.0);
+			var x2 = parseFloat($this.paint.linearGradient.grad.getAttribute('x2')||1.0);
+			var y2 = parseFloat($this.paint.linearGradient.grad.getAttribute('y2')||0.0);
 			
             var rect = document.createElementNS(ns.svg, 'rect');
             rect.id = id + '_jgraduate_rect';
@@ -227,7 +234,7 @@ jQuery.fn.jGraduate =
             	cancelClicked();
             });
             
-            var x1 = $this.paint.linearGradient.getAttribute('x1');
+            var x1 = $this.paint.linearGradient.grad.getAttribute('x1');
             if(!x1) x1 = "0.0";
             x1Input = $('#'+id+'_jGraduate_x1');
             x1Input.val(x1);
@@ -235,11 +242,11 @@ jQuery.fn.jGraduate =
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
             		this.value = 0.0; 
             	}
-            	$this.paint.linearGradient.setAttribute('x1', this.value);
+            	$this.paint.linearGradient.grad.setAttribute('x1', this.value);
             	beginStop.setAttribute('x', MARGINX + SIZEX*this.value - STOP_RADIUS);
             });
 
-            var y1 = $this.paint.linearGradient.getAttribute('y1');
+            var y1 = $this.paint.linearGradient.grad.getAttribute('y1');
             if(!y1) y1 = "0.0";
             y1Input = $('#'+id+'_jGraduate_y1');
             y1Input.val(y1);
@@ -247,11 +254,11 @@ jQuery.fn.jGraduate =
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
             		this.value = 0.0; 
             	}
-            	$this.paint.linearGradient.setAttribute('y1', this.value);
+            	$this.paint.linearGradient.grad.setAttribute('y1', this.value);
             	beginStop.setAttribute('y', MARGINY + SIZEY*this.value - STOP_RADIUS);
             });
             
-            var x2 = $this.paint.linearGradient.getAttribute('x2');
+            var x2 = $this.paint.linearGradient.grad.getAttribute('x2');
             if(!x2) x2 = "1.0";
             x2Input = $('#'+id+'_jGraduate_x2');
             x2Input.val(x2);
@@ -259,11 +266,11 @@ jQuery.fn.jGraduate =
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
             		this.value = 1.0;
             	}
-            	$this.paint.linearGradient.setAttribute('x2', this.value);
+            	$this.paint.linearGradient.grad.setAttribute('x2', this.value);
             	endStop.setAttribute('x', MARGINX + SIZEX*this.value - STOP_RADIUS);
             });
             
-            var y2 = $this.paint.linearGradient.getAttribute('y2');
+            var y2 = $this.paint.linearGradient.grad.getAttribute('y2');
             if(!y2) y2 = "0.0";
             y2Input = $('#'+id+'_jGraduate_y2');
             y2Input.val(y2);
@@ -271,19 +278,19 @@ jQuery.fn.jGraduate =
             	if (isNaN(parseFloat(this.value)) || this.value < 0.0 || this.value > 1.0) { 
             		this.value = 0.0;
             	}
-            	$this.paint.linearGradient.setAttribute('y2', this.value);
+            	$this.paint.linearGradient.grad.setAttribute('y2', this.value);
             	endStop.setAttribute('y', MARGINY + SIZEY*this.value - STOP_RADIUS);
             });            
             
-            var stops = $this.paint.linearGradient.getElementsByTagNameNS(ns.svg, 'stop');
+            var stops = $this.paint.linearGradient.grad.getElementsByTagNameNS(ns.svg, 'stop');
             var numstops = stops.length;
             // if there are not at least two stops, then 
             if (numstops < 2) {
 	            while (numstops < 2) {
-    	        	$this.paint.linearGradient.appendChild( document.createElementNS(ns.svg, 'stop') );
+    	        	$this.paint.linearGradient.grad.appendChild( document.createElementNS(ns.svg, 'stop') );
         	    	++numstops;
             	}
-            	stops = $this.paint.linearGradient.getElementsByTagNameNS(ns.svg, 'stop');
+            	stops = $this.paint.linearGradient.grad.getElementsByTagNameNS(ns.svg, 'stop');
             }
             
             var setOpacitySlider = function(e, div) {
@@ -292,9 +299,12 @@ jQuery.fn.jGraduate =
             	if (x > 255) x = 255;
             	if (x < 0) x = 0;
             	var posx = x - 4.5;
+            	x /= 255;
             	$('#' + id + '_jGraduate_AlphaArrows').css({'margin-left':posx});
-            	$('#' + id + '_jgraduate_rect').attr('fill-opacity', x/255);
-            	$('#' + id + '_jGraduate_OpacityInput').val(parseInt(x*100/255));
+            	$('#' + id + '_jgraduate_rect').attr('fill-opacity', x);
+            	x = parseInt(x*100);
+            	$('#' + id + '_jGraduate_OpacityInput').val(x);
+            	$this.paint.linearGradient.a = x;
             };
             
             // handle dragging on the opacity slider
@@ -348,17 +358,17 @@ jQuery.fn.jGraduate =
             		var fracx = (x - MARGINX + STOP_RADIUS)/SIZEX;
             		var fracy = (y - MARGINY + STOP_RADIUS)/SIZEY;
             		
-            		if (draggingStop.id == 'stop1') {
+            		if (draggingStop.id == (id+'_stop1')) {
             			x1Input.val(fracx);
             			y1Input.val(fracy);
-            			$this.paint.linearGradient.setAttribute('x1', fracx);
-            			$this.paint.linearGradient.setAttribute('y1', fracy);
+            			$this.paint.linearGradient.grad.setAttribute('x1', fracx);
+            			$this.paint.linearGradient.grad.setAttribute('y1', fracy);
             		}
             		else {
             			x2Input.val(fracx);
             			y2Input.val(fracy);
-            			$this.paint.linearGradient.setAttribute('x2', fracx);
-            			$this.paint.linearGradient.setAttribute('y2', fracy);
+            			$this.paint.linearGradient.grad.setAttribute('x2', fracx);
+            			$this.paint.linearGradient.grad.setAttribute('y2', fracy);
             		}
             		
             		evt.preventDefault();
