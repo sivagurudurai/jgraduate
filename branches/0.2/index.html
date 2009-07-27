@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html><head>
+	<link type="text/css" rel="stylesheet" href="css/jgraduate.css"/>
+	<link type="text/css" rel="stylesheet" href="css/jPicker-1.0.9.css"/>
+	<style type="text/css">
+		#grad_picker { display: none; }
+		.button {
+			border: solid 1px darkgrey;
+			background-color: white;
+			width: 50px; height: 50px;
+			cursor: pointer;
+		}
+	</style>
+	<script type="text/javascript" src="jquery.js"></script>
+	<script type="text/javascript" src="jpicker-1.0.9.min.js"></script>
+	<script type="text/javascript" src="jquery.jgraduate.js"></script>
+	<script type="text/javascript">
+	$(function() {
+		var launchPicker = function(elem, paint) {
+			var pos = elem.position();
+			$('#gradPicker').css({'left': pos.left, 'top': pos.top}).jGraduate(
+				paint, 
+				function(p) {
+					if (p.linearGradient != null) {
+						var oldgrad = document.getElementById("grad");
+						var newgrad = document.importNode(p.linearGradient.grad, true);
+						newgrad.id = "grad";
+						// replace the old gradient with the new one
+						var parent = oldgrad.parentNode;
+						parent.replaceChild(newgrad, oldgrad);
+						$('#r').attr('fill', 'url(#grad)');
+						$('#r').attr('fill-opacity', p.linearGradient.a/100);
+					}
+					else { // solid color
+						$('#r').attr('fill', '#'+p.solidColor.hex);
+						$('#r').attr('fill-opacity', p.solidColor.a/100);
+					}
+				},
+				function(p) {},
+				"Pick a paint for the demo");
+		};
+		
+		var svgdoc = new DOMParser().parseFromString(
+			'<svg xmlns="http://www.w3.org/2000/svg">\
+				<linearGradient id="grad">\
+					<stop stop-color="#000" offset="0.0"/>\
+					<stop stop-color="#FF0000" offset="1.0"/>\
+				</linearGradient>\
+				<rect id="r" width="100%" height="100%" fill="url(#grad)"/>\
+			</svg>', 'text/xml');
+
+		$('#button1').append( document.importNode(svgdoc.documentElement,true) );
+		$('#button1').click(function() { 
+			var paint = {solidColor:null, linearGradient:null};
+			var rect = $("#r");
+			var alpha = rect.attr("fill-opacity")*100 || 100;
+			fill = rect.attr("fill");
+			if (fill == "url(#grad)") {
+				paint.linearGradient = { grad: document.getElementById("grad"), a: alpha };
+			}
+			else {
+				paint.solidColor = new $.jPicker.Color({ hex: fill.substr(1), a: alpha });
+			}
+			launchPicker($(this), paint); 
+		});
+	});
+	</script>
+	<title>jGraduate Test Page</title>
+</head><body>
+	<div id="gradPicker"></div>
+	<p>This is a demo of the <a href="http://jgraduate.googlecode.com/">jGraduate jQuery plugin</a>.</p>
+	<div id="button1" class="button"></div>	
+	<p>Click the box to change the gradient.</p>
+</body></html>
