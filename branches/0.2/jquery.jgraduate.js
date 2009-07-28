@@ -202,8 +202,8 @@ jQuery.fn.jGraduate =
             beginStop.setAttributeNS(ns.xlink, "title", "Begin Stop");
             beginStop.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
             	document.createTextNode("Begin Stop"));
-            beginStop.setAttribute('width', 15);
-            beginStop.setAttribute('height', 15);
+            beginStop.setAttribute('width', 18);
+            beginStop.setAttribute('height', 18);
             beginStop.setAttribute('x', MARGINX + SIZEX*x1 - STOP_RADIUS);
             beginStop.setAttribute('y', MARGINY + SIZEY*y1 - STOP_RADIUS);
             beginStop.setAttribute('cursor', 'move');
@@ -218,8 +218,8 @@ jQuery.fn.jGraduate =
             endStop.setAttributeNS(ns.xlink, "title", "End Stop");
             endStop.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
             	document.createTextNode("End Stop"));
-            endStop.setAttribute('width', 15);
-            endStop.setAttribute('height', 15);
+            endStop.setAttribute('width', 18);
+            endStop.setAttribute('height', 18);
             endStop.setAttribute('x', MARGINX + SIZEX*x2 - STOP_RADIUS);
             endStop.setAttribute('y', MARGINY + SIZEY*y2 - STOP_RADIUS);
             endStop.setAttribute('cursor', 'move');
