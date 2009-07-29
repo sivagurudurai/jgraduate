@@ -19,7 +19,10 @@
 		var launchPicker = function(elem, paint) {
 			var pos = elem.position();
 			$('#gradPicker').css({'left': pos.left, 'top': pos.top}).jGraduate(
-				paint, 
+				{ 
+					paint: paint,
+					window: { pickerTitle: "Pick a paint for the demo", },
+				}, 
 				function(p) {
 					if (p.linearGradient != null) {
 						var oldgrad = document.getElementById("grad");
@@ -36,8 +39,7 @@
 						$('#r').attr('fill-opacity', p.solidColor.a/100);
 					}
 				},
-				function(p) {},
-				"Pick a paint for the demo");
+				function(p) {});
 		};
 		
 		var svgdoc = new DOMParser().parseFromString(
@@ -51,12 +53,13 @@
 
 		$('#button1').append( document.importNode(svgdoc.documentElement,true) );
 		$('#button1').click(function() { 
-			var paint = {solidColor:null, linearGradient:null};
+			var paint = new $.jGraduate.Paint();//{solidColor:null, linearGradient:null};
 			var rect = $("#r");
 			var alpha = rect.attr("fill-opacity")*100 || 100;
 			fill = rect.attr("fill");
 			if (fill == "url(#grad)") {
-				paint.linearGradient = { grad: document.getElementById("grad"), a: alpha };
+				paint.linearGradient.grad = document.getElementById("grad");
+				paint.linearGradient.a = alpha;
 			}
 			else {
 				paint.solidColor = new $.jPicker.Color({ hex: fill.substr(1), a: alpha });
