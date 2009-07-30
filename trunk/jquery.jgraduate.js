@@ -489,7 +489,7 @@ jQuery.fn.jGraduate =
 				},
 				function(color) { 
 					$this.paint.solidColor = color;
-					$this.paint.linearGradient = null;
+					$this.paint.linearGradient.grad = null;
 					okClicked(); 
 				},
 				null,
