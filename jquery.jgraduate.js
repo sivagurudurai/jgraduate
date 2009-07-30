@@ -52,9 +52,11 @@ $.jGraduate = {
     				this.solidColor = new $.jPicker.Color({ hex: copy.solidColor.hex, 
     													a: copy.solidColor.a });
 
+				// FIXME: linearGradient can be an object, but .grad can still be null
 	    		if (copy.linearGradient)
-    				this.linearGradient = { grad: document.cloneNode(copy.linearGradient.grad), 
-    									a: copy.linearGradient.a };
+	    			// Opera throws NOT_SUPPORTED_ERROR if the cloneNode(null), the other browsers do not
+    				this.linearGradient = { grad: copy.linearGradient.grad ? document.cloneNode(copy.linearGradient.grad, true) : null, 
+    										a: copy.linearGradient.a };
     		}
 	    	else {
     			this.solidColor = new $.jPicker.Color({ hex: '000000', a: 100 });
