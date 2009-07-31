@@ -7,6 +7,15 @@
  * http://blog.codedread.com/
  *
  * Apache 2 License
+
+jGraduate( options, okCallback, cancelCallback )
+
+where options is an object literal:
+	{
+		window: { title: "Pick the start color and opacity for the gradient" },
+		images: { clientPath: "images/" },
+		paint: a Paint object
+	}
  
 - the Paint object is:
 	{
@@ -35,13 +44,45 @@ if(!window.console) {
     this.dir = function(str) {};
   };
 }
+$.jGraduate = { 
+	Paint:
+		function(copy) {
+    		if (copy) {
+    			if (copy.solidColor) 
+    				this.solidColor = new $.jPicker.Color({ hex: copy.solidColor.hex, 
+    													a: copy.solidColor.a });
+
+				// FIXME: linearGradient can be an object, but .grad can still be null
+	    		if (copy.linearGradient)
+	    			// Opera throws NOT_SUPPORTED_ERROR if the cloneNode(null), the other browsers do not
+    				this.linearGradient = { grad: copy.linearGradient.grad ? document.cloneNode(copy.linearGradient.grad, true) : null, 
+    										a: copy.linearGradient.a };
+    		}
+	    	else {
+    			this.solidColor = new $.jPicker.Color({ hex: '000000', a: 100 });
+    			this.linearGradient = { grad: null, a: 100 };
+	    	}
+		}
+};
+
+jQuery.fn.jGraduateDefaults = {
+	paint: new $.jGraduate.Paint(),
+	window: {
+		pickerTitle: "Drag markers to pick a paint",
+	},
+	images: {
+		clientPath: "images/",
+	},
+};
+
 jQuery.fn.jGraduate =
 	function(options) {
 	 	var $arguments = arguments;
 		return this.each( function() {
-			var $this = $(this),
+			var $this = $(this), $settings = $.extend(true, {}, jQuery.fn.jGraduateDefaults, options),
 				id = $this.attr('id'),
 				idref = '#'+$this.attr('id')+' ';
+			
             if (!idref)
             {
               alert('Container element must have an id attribute to maintain unique id strings for sub-elements.');
@@ -59,10 +100,9 @@ jQuery.fn.jGraduate =
 
             $.extend(true, $this, // public properties, methods, and callbacks
               {
-                paint: $arguments[0] || null,
+                paint: $settings.paint,
                 okCallback: $.isFunction($arguments[1]) && $arguments[1] || null,
                 cancelCallback: $.isFunction($arguments[2]) && $arguments[2] || null,
-                pickerTitle: $arguments[3] || "Drag markers to pick a paint",
               });
 
 			var mode = "solidColor",
@@ -71,20 +111,20 @@ jQuery.fn.jGraduate =
 			
 			if ($this.paint == null) {
 				$this.paint = { solidColor: new $.jPicker.Color({ hex: 'ffffff', a: 100 }), 
-						  		linearGradient: null };
+						  		linearGradient: { grad: null, a: 100 } };
 			}
 
-			if ($this.paint.solidColor == null && $this.paint.linearGradient != null) {
+			if ($this.paint.linearGradient.grad != null) {
 				mode = "linearGradient";
 				$this.paint.solidColor = new $.jPicker.Color({ hex: 'ffffff', a: 100 });
 			}
-			else if ($this.paint.solidColor != null && $this.paint.linearGradient == null) {
+			else if ($this.paint.solidColor != null) {
 				$this.paint.linearGradient = { grad: null, a: 100 };
 			}
 			else {
 				return null;
 			}
-
+			
             $this.addClass('jGraduate_Picker');
             $this.html('<ul class="jGraduate_tabs">' +
             				'<li class="jGraduate_tab_color jGraduate_tab_current">Solid Color</li>' +
@@ -97,10 +137,10 @@ jQuery.fn.jGraduate =
 			
             lgPicker.html(
             	'<div id="' + id + '_jGraduate_Swatch" class="jGraduate_Swatch">' +
-            		'<h2 class="jGraduate_Title">' + $this.pickerTitle + '</h2>' +
+            		'<h2 class="jGraduate_Title">' + $settings.window.pickerTitle + '</h2>' +
             		'<div id="' + id + '_jGraduate_GradContainer" class="jGraduate_GradContainer"></div>' +
             		'<div id="' + id + '_jGraduate_Opacity" class="jGraduate_Opacity" title="Click to set overall opacity of the gradient paint">' +
-            			'<img id="' + id + '_jGraduate_AlphaArrows" class="jGraduate_AlphaArrows" src="images/rangearrows2.gif"></img>' +
+            			'<img id="' + id + '_jGraduate_AlphaArrows" class="jGraduate_AlphaArrows" src="' + $settings.images.clientPath + 'rangearrows2.gif"></img>' +
             		'</div>' +
             	'</div>' + 
             	'<div class="jGraduate_Form">' +
@@ -198,7 +238,7 @@ jQuery.fn.jGraduate =
             var beginStop = document.createElementNS(ns.svg, 'image');
             beginStop.id = id + "_stop1";
             beginStop.setAttribute('class', 'stop');
-            beginStop.setAttributeNS(ns.xlink, 'href', 'images/mappoint.gif');
+            beginStop.setAttributeNS(ns.xlink, 'href', $settings.images.clientPath + 'mappoint.gif');
             beginStop.setAttributeNS(ns.xlink, "title", "Begin Stop");
             beginStop.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
             	document.createTextNode("Begin Stop"));
@@ -214,7 +254,7 @@ jQuery.fn.jGraduate =
             var endStop = document.createElementNS(ns.svg, 'image');
             endStop.id = id + "_stop2";
             endStop.setAttribute('class', 'stop');
-            endStop.setAttributeNS(ns.xlink, 'href', 'images/mappoint.gif');
+            endStop.setAttributeNS(ns.xlink, 'href', $settings.images.clientPath + 'mappoint.gif');
             endStop.setAttributeNS(ns.xlink, "title", "End Stop");
             endStop.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
             	document.createTextNode("End Stop"));
@@ -402,7 +442,7 @@ jQuery.fn.jGraduate =
 				color = new $.jPicker.Color({ hex: beginColor.substr(1), a:(parseFloat(beginOpacity)*100) });
 				$('#'+id+'_jGraduate_stopPicker').css({'left': 100, 'bottom': 15}).jPicker({
 						window: { title: "Pick the start color and opacity for the gradient" },
-						images: { clientPath: "images/" },
+						images: { clientPath: $settings.images.clientPath },
 						color: { active: color, alphaSupport: true }
 					}, function(color){
 						beginColor = '#' + this.settings.color.active.hex;
@@ -424,7 +464,7 @@ jQuery.fn.jGraduate =
 				color = new $.jPicker.Color({ hex: endColor.substr(1), a:(parseFloat(endOpacity)*100) });
 				$('#'+id+'_jGraduate_stopPicker').css({'left': 100, 'top': 15}).jPicker({
 						window: { title: "Pick the end color and opacity for the gradient" },
-						images: { clientPath: "images/" },
+						images: { clientPath: $settings.images.clientPath },
 						color: { active: color, alphaSupport: true }
 					}, function(color){
 						endColor = '#' + this.settings.color.active.hex;
@@ -445,13 +485,13 @@ jQuery.fn.jGraduate =
             
 			colPicker.jPicker(
 				{
-					window: { title: $this.pickerTitle },
-					images: { clientPath: "images/" },
+					window: { title: $settings.window.pickerTitle },
+					images: { clientPath: $settings.images.clientPath },
 					color: { active: $this.paint.solidColor, alphaSupport: true }
 				},
 				function(color) { 
 					$this.paint.solidColor = color;
-					$this.paint.linearGradient = null;
+					$this.paint.linearGradient.grad = null;
 					okClicked(); 
 				},
 				null,
@@ -484,7 +524,6 @@ jQuery.fn.jGraduate =
 				$(idref + ' .jGraduate_tab_lingrad').removeClass('jGraduate_tab_current');				
 			}
 
-			$this.css({'left': pos.left, 'top': pos.top});
 			$this.show();
 		});
 	};
