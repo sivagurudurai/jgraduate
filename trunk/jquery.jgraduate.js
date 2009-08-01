@@ -225,7 +225,7 @@ jQuery.fn.jGraduate =
 
 				var end = grad.appendChild(document.createElementNS(ns.svg, 'stop'));
 				end.setAttribute('offset', '1.0');
-				end.setAttribute('stop-color', '#ff0');
+				end.setAttribute('stop-color', '#ffff00');
 			
 				$this.paint.linearGradient = grad;
 			}
@@ -500,7 +500,6 @@ jQuery.fn.jGraduate =
 			});            
             
 			// --------------
-            
 			colPicker.jPicker(
 				{
 					window: { title: $settings.window.pickerTitle },
