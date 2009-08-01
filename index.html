@@ -19,25 +19,26 @@
 		var launchPicker = function(elem, paint) {
 			var pos = elem.position();
 			$('#gradPicker').css({'left': pos.left, 'top': pos.top}).jGraduate(
-				paint, 
+				{ 
+					paint: paint,
+					window: { pickerTitle: "Pick a paint for the demo", },
+				}, 
 				function(p) {
-					if (p.linearGradient != null) {
+					$('#r').attr('fill-opacity', p.alpha/100);
+					if (p.type == "linearGradient") {
 						var oldgrad = document.getElementById("grad");
-						var newgrad = document.importNode(p.linearGradient.grad, true);
+						var newgrad = document.importNode(p.linearGradient, true);
 						newgrad.id = "grad";
 						// replace the old gradient with the new one
 						var parent = oldgrad.parentNode;
 						parent.replaceChild(newgrad, oldgrad);
 						$('#r').attr('fill', 'url(#grad)');
-						$('#r').attr('fill-opacity', p.linearGradient.a/100);
 					}
 					else { // solid color
-						$('#r').attr('fill', '#'+p.solidColor.hex);
-						$('#r').attr('fill-opacity', p.solidColor.a/100);
+						$('#r').attr('fill', '#'+p.solidColor);
 					}
 				},
-				function(p) {},
-				"Pick a paint for the demo");
+				function(p) {});
 		};
 		
 		var svgdoc = new DOMParser().parseFromString(
@@ -51,15 +52,15 @@
 
 		$('#button1').append( document.importNode(svgdoc.documentElement,true) );
 		$('#button1').click(function() { 
-			var paint = {solidColor:null, linearGradient:null};
+			var paint = new $.jGraduate.Paint();
 			var rect = $("#r");
 			var alpha = rect.attr("fill-opacity")*100 || 100;
 			fill = rect.attr("fill");
 			if (fill == "url(#grad)") {
-				paint.linearGradient = { grad: document.getElementById("grad"), a: alpha };
+				paint = new $.jGraduate.Paint({alpha: alpha, linearGradient: document.getElementById("grad")});
 			}
 			else {
-				paint.solidColor = new $.jPicker.Color({ hex: fill.substr(1), a: alpha });
+				paint = new $.jGraduate.Paint({alpha: alpha, solidColor: fill.substr(1)});
 			}
 			launchPicker($(this), paint); 
 		});
