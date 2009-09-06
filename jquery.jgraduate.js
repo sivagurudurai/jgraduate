@@ -8,6 +8,8 @@
  *
  * Apache 2 License
 
+CSS Gradients: http://webkit.org/blog/175/introducing-css-gradients/
+
 jGraduate( options, okCallback, cancelCallback )
 
 where options is an object literal:
