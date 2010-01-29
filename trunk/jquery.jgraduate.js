@@ -1,5 +1,5 @@
 ﻿/*
- * jGraduate 0.2.x
+ * jGraduate 0.3.x
  *
  * jQuery Plugin for a gradient picker
  *
@@ -475,14 +475,16 @@ jQuery.fn.jGraduate =
 			$('#'+id+'_jGraduate_colorBoxBegin').click(function() {
 				$('div.jGraduate_LightBox').show();			
 				var colorbox = $(this);
-				color = new $.jPicker.Color({ hex: beginColor.substr(1), a:(parseFloat(beginOpacity)*100) });
+				var thisAlpha = (parseFloat(beginOpacity)*255).toString(16);
+				while (thisAlpha.length < 2) { thisAlpha = "0" + thisAlpha; }
+				color = beginColor.substr(1) + thisAlpha;
 				$('#'+id+'_jGraduate_stopPicker').css({'left': 100, 'bottom': 15}).jPicker({
 						window: { title: "Pick the start color and opacity for the gradient" },
 						images: { clientPath: $settings.images.clientPath },
 						color: { active: color, alphaSupport: true }
 					}, function(color){
-						beginColor = '#' + this.settings.color.active.hex;
-						beginOpacity = this.settings.color.active.a/100;
+						beginColor = color.get_Hex() ? ('#'+color.get_Hex()) : "none";
+						beginOpacity = color.get_A() ? color.get_A()/100 : 1;
 						colorbox.css('background', beginColor);
 						$('#'+id+'_jGraduate_beginOpacity').html(parseInt(beginOpacity*100)+'%');
             			stops[0].setAttribute('stop-color', beginColor);
@@ -497,14 +499,16 @@ jQuery.fn.jGraduate =
 			$('#'+id+'_jGraduate_colorBoxEnd').click(function() {
 				$('div.jGraduate_LightBox').show();
 				var colorbox = $(this);
-				color = new $.jPicker.Color({ hex: endColor.substr(1), a:(parseFloat(endOpacity)*100) });
+				var thisAlpha = (parseFloat(endOpacity)*255).toString(16);
+				while (thisAlpha.length < 2) { thisAlpha = "0" + thisAlpha; }
+				color = endColor.substr(1) + thisAlpha;
 				$('#'+id+'_jGraduate_stopPicker').css({'left': 100, 'top': 15}).jPicker({
 						window: { title: "Pick the end color and opacity for the gradient" },
 						images: { clientPath: $settings.images.clientPath },
 						color: { active: color, alphaSupport: true }
 					}, function(color){
-						endColor = '#' + this.settings.color.active.hex;
-						endOpacity = this.settings.color.active.a/100;
+						endColor = color.get_Hex() ? ('#'+color.get_Hex()) : "none";
+						endOpacity = color.get_A() ? color.get_A()/100 : 1;
 						colorbox.css('background', endColor);
 						$('#'+id+'_jGraduate_endOpacity').html(parseInt(endOpacity*100)+'%');
             			stops[1].setAttribute('stop-color', endColor);
@@ -518,16 +522,19 @@ jQuery.fn.jGraduate =
 			});            
             
 			// --------------
+			var thisAlpha = ($this.paint.alpha*2.55).toString(16);
+			while (thisAlpha.length < 2) { thisAlpha = "0" + thisAlpha; }
+			color = endColor.substr(1) + thisAlpha;
 			colPicker.jPicker(
 				{
 					window: { title: $settings.window.pickerTitle },
 					images: { clientPath: $settings.images.clientPath },
-					color: { active: new $.jPicker.Color({hex:$this.paint.solidColor, a:$this.paint.alpha}), alphaSupport: true }
+					color: { active: ($this.paint.solidColor+thisAlpha), alphaSupport: true }
 				},
 				function(color) {
 					$this.paint.type = "solidColor";
-					$this.paint.alpha = color.a;
-					$this.paint.solidColor = color.hex;
+					$this.paint.alpha = color.get_A() ? color.get_A() : 100;
+					$this.paint.solidColor = color.get_Hex() ? color.get_Hex() : "none";
 					$this.paint.linearGradient = null;
 					okClicked(); 
 				},
