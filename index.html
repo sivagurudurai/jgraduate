@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html><head>
 	<link type="text/css" rel="stylesheet" href="css/jgraduate.css"/>
-	<link type="text/css" rel="stylesheet" href="css/jPicker-1.0.9.css"/>
+	<link type="text/css" rel="stylesheet" href="css/jPicker-1.0.12.css"/>
 	<style type="text/css">
 		#grad_picker { display: none; }
 		.button {
@@ -12,7 +12,7 @@
 		}
 	</style>
 	<script type="text/javascript" src="jquery.js"></script>
-	<script type="text/javascript" src="jpicker-1.0.9.min.js"></script>
+	<script type="text/javascript" src="jpicker-1.0.12.min.js"></script>
 	<script type="text/javascript" src="jquery.jgraduate.js"></script>
 	<script type="text/javascript">
 	$(function() {
@@ -35,7 +35,7 @@
 						$('#r').attr('fill', 'url(#grad)');
 					}
 					else { // solid color
-						$('#r').attr('fill', '#'+p.solidColor);
+						$('#r').attr('fill', (p.solidColor!='none'?'#':'') +p.solidColor);
 					}
 				},
 				function(p) {});
