@@ -214,7 +214,6 @@ jQuery.fn.jGraduate =
             // Set up all the SVG elements (the gradient, stops and rectangle)
             var MAX = 256, MARGINX = 0, MARGINY = 0, STOP_RADIUS = 15/2,
             	SIZEX = MAX - 2*MARGINX, SIZEY = MAX - 2*MARGINY;
-//            var container = document.getElementById(id+'_jGraduate_Swatch');
             var container = document.getElementById(id+'_jGraduate_GradContainer');
             var svg = container.appendChild(document.createElementNS(ns.svg, 'svg'));
             svg.id = id+'_jgraduate_svg';            
@@ -225,7 +224,6 @@ jQuery.fn.jGraduate =
 			// if we are sent a gradient, import it 
 			if ($this.paint.type == "linearGradient") {
 				$this.paint.linearGradient.id = id+'_jgraduate_grad';
-// 				$this.paint.linearGradient = svg.appendChild(document.importNode($this.paint.linearGradient, true));
 				$this.paint.linearGradient = svg.appendChild($.cloneNode($this.paint.linearGradient));
 			}
 			else { // we create a gradient
@@ -253,10 +251,10 @@ jQuery.fn.jGraduate =
             $('#' + id + '_jGraduate_AlphaArrows').css({'margin-left':posx});
             $('#' + id + '_jgraduate_rect').attr('fill-opacity', gradalpha/100);
 			
-			var x1 = parseFloat($this.paint.linearGradient.getAttribute('x1')||0.0);
-			var y1 = parseFloat($this.paint.linearGradient.getAttribute('y1')||0.0);
-			var x2 = parseFloat($this.paint.linearGradient.getAttribute('x2')||1.0);
-			var y2 = parseFloat($this.paint.linearGradient.getAttribute('y2')||0.0);
+			var x1 = parseFloat($this.paint.linearGradient.getAttribute('x1')||0.0),
+				y1 = parseFloat($this.paint.linearGradient.getAttribute('y1')||0.0),
+				x2 = parseFloat($this.paint.linearGradient.getAttribute('x2')||1.0),
+				y2 = parseFloat($this.paint.linearGradient.getAttribute('y2')||0.0);
 			
             var rect = document.createElementNS(ns.svg, 'rect');
             rect.id = id + '_jgraduate_rect';
@@ -522,14 +520,14 @@ jQuery.fn.jGraduate =
 			});            
             
 			// --------------
-			var thisAlpha = ($this.paint.alpha*2.55).toString(16);
+			var thisAlpha = ($this.paint.alpha*255/100).toString(16);
 			while (thisAlpha.length < 2) { thisAlpha = "0" + thisAlpha; }
-			color = endColor.substr(1) + thisAlpha;
+			color = $this.paint.solidColor == "none" ? "" : $this.paint.solidColor + thisAlpha;
 			colPicker.jPicker(
 				{
 					window: { title: $settings.window.pickerTitle },
 					images: { clientPath: $settings.images.clientPath },
-					color: { active: ($this.paint.solidColor+thisAlpha), alphaSupport: true }
+					color: { active: color, alphaSupport: true }
 				},
 				function(color) {
 					$this.paint.type = "solidColor";
