@@ -230,21 +230,21 @@ jQuery.fn.jGraduate =
             			'<img id="' + id + '_rg_jGraduate_AlphaArrows" class="jGraduate_AlphaArrows" src="' + $settings.images.clientPath + 'rangearrows2.gif"></img>' +
             		'</div>' +
             	'</div>' + 
+				'<div id="jGraduate_radColors" class="jGraduate_StopSection">' +
+					'<label class="jGraduate_Form_Heading">Colors</label>' +
+					'<div class="jGraduate_Form_Section jGraduate_Colorblocks">' +
+						'<div class="jGraduate_colorblock"><span>Center:</span>' +
+						'<div id="' + id + '_jGraduate_colorBoxCenter" class="colorBox"></div>' +
+						'<label id="' + id + '_jGraduate_beginOpacity"> 100%</label></div>' +
+
+						'<div class="jGraduate_colorblock"><span>Outer:</span>' +
+							'<div id="' + id + '_jGraduate_colorBoxOuter" class="colorBox"></div>' +
+							'<label id="' + id + '_jGraduate_beginOpacity"> 100%</label></div>' +
+					'</div>' +
+				'</div>' +
+				'<div class="jGraduate_StopSection">' +
+				'</div>' +
             	'<div class="jGraduate_Form">' +
-            		'<div class="jGraduate_StopSection">' +
-	            		'<label class="jGraduate_Form_Heading">Center Color</label>' +
-    	        		'<div class="jGraduate_Form_Section">' +
-	        	    		'<div id="' + id + '_jGraduate_colorBoxCenter" class="colorBox"></div>' +
-		            		'<label id="' + id + '_jGraduate_beginOpacity"> 100%</label>' +
-        	   			'</div>' +
-        	   		'</div>' +
-            		'<div class="jGraduate_StopSection">' +
-	            		'<label class="jGraduate_Form_Heading">Outer Color</label>' +
-    	        		'<div class="jGraduate_Form_Section">' +
-	        	    		'<div id="' + id + '_jGraduate_colorBoxOuter" class="colorBox"></div>' +
-		            		'<label id="' + id + '_jGraduate_beginOpacity"> 100%</label>' +
-        	   			'</div>' +
-        	   		'</div>' +
         	   		'<div class="jGraduate_StopSection">' +
 	            		'<label class="jGraduate_Form_Heading">Center Point</label>' +
     	        		'<div class="jGraduate_Form_Section">' +
@@ -268,6 +268,7 @@ jQuery.fn.jGraduate =
 	            		'<label class="jGraduate_Form_Heading">Spread</label>' +
     	        		'<div class="jGraduate_Form_Section">' +
 							'<div id="' + id + '_jGraduate_SpreadContainer" class="jGraduate_SpreadContainer"></div>' +
+							'<input type="text" id="' + id + '_jGraduate_SpreadInput" size="3" value="100"/>%' +
 							'<div id="' + id + '_jGraduate_Spread" class="jGraduate_Spread" title="Click to set spread distance">' +
 								'<img id="' + id + '_jGraduate_SpreadArrows" class="jGraduate_SpreadArrows" src="' + $settings.images.clientPath + 'rangearrows2.gif"></img>' +
 							'</div>' +
@@ -636,7 +637,7 @@ jQuery.fn.jGraduate =
 					grad.id = id+'_rg_jgraduate_grad';
 					grad.setAttribute('cx','0.5');
 					grad.setAttribute('cy','0.5');
-					grad.setAttribute('r','1.0');
+					grad.setAttribute('r','0.5');
 					
 					var begin = grad.appendChild(document.createElementNS(ns.svg, 'stop'));
 					begin.setAttribute('offset', '0.0');
@@ -680,7 +681,7 @@ jQuery.fn.jGraduate =
 				var centerPoint = document.createElementNS(ns.svg, 'image');
 				centerPoint.id = id + "_center_pt";
 				centerPoint.setAttribute('class', 'stop');
-				centerPoint.setAttributeNS(ns.xlink, 'href', $settings.images.clientPath + 'mappoint.gif');
+				centerPoint.setAttributeNS(ns.xlink, 'href', $settings.images.clientPath + 'mappoint_c.png');
 				centerPoint.setAttributeNS(ns.xlink, "title", "Center Point");
 				centerPoint.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
 					document.createTextNode("Center Point"));
@@ -694,7 +695,7 @@ jQuery.fn.jGraduate =
 				var focusPoint = document.createElementNS(ns.svg, 'image');
 				focusPoint.id = id + "_focus_pt";
 				focusPoint.setAttribute('class', 'stop');
-				focusPoint.setAttributeNS(ns.xlink, 'href', $settings.images.clientPath + 'mappoint.gif');
+				focusPoint.setAttributeNS(ns.xlink, 'href', $settings.images.clientPath + 'mappoint_f.png');
 				focusPoint.setAttributeNS(ns.xlink, "title", "Focus Point");
 				focusPoint.appendChild(document.createElementNS(ns.svg, 'title')).appendChild(
 					document.createTextNode("Focus Point"));
@@ -775,6 +776,9 @@ jQuery.fn.jGraduate =
 					fyInput.val("");
 				}
 
+				$("#" + id + "_jGraduate_match_ctr")[0].checked = !showFocus;
+				
+				var lastfx, lastfy;
 				
 				$("#" + id + "_jGraduate_match_ctr").change(function() {
 					showFocus = !this.checked;
@@ -783,13 +787,17 @@ jQuery.fn.jGraduate =
 					fyInput.val("");
 					var grad = $this.paint.radialGradient;
 					if(!showFocus) {
+						lastfx = grad.getAttribute('fx');
+						lastfy = grad.getAttribute('fy');
 						grad.removeAttribute('fx');
 						grad.removeAttribute('fy');
 					} else {
-						grad.setAttribute('fx', .5);
-						grad.setAttribute('fy', .5);
-						fxInput.val(0.5);
-						fyInput.val(0.5);
+						var fx = lastfx || .5;
+						var fy = lastfy || .5;
+						grad.setAttribute('fx', fx);
+						grad.setAttribute('fy', fy);
+						fxInput.val(fx);
+						fyInput.val(fy);
 					}
 				});
 				
@@ -803,10 +811,22 @@ jQuery.fn.jGraduate =
 					}
 					stops = $this.paint.radialGradient.getElementsByTagNameNS(ns.svg, 'stop');
 				}
-				var stop_offset = stops[1].getAttribute('offset')-0;
-				var spreadx = parseInt(122*(stop_offset)) - 4.5;
+				var radius = $this.paint.radialGradient.getAttribute('r')-0;
+				var spreadx = parseInt((245/2)*(radius)) - 4.5;
 				$('#' + id + '_jGraduate_SpreadArrows').css({'margin-left':spreadx});
-
+				$('#' + id + '_jGraduate_SpreadInput').val(parseInt(radius*100)).change(function(e) {
+					var x = this.value / 100;
+					if(x < 0.01) {
+						x = 0.01;
+					}
+					
+					$this.paint.radialGradient.setAttribute('r', x);
+					// Allow higher value, but pretend it's the max for the slider
+					if(x > 2) x = 2;
+					var posx = parseInt((245/2) * x) - 4.5;
+					$('#' + id + '_jGraduate_SpreadArrows').css({'margin-left':posx});
+					
+				});
 				
 				var setRgOpacitySlider = function(e, div) {
 					var offset = div.offset();
@@ -850,7 +870,6 @@ jQuery.fn.jGraduate =
 					$this.paint.radialGradient.setAttribute('r', x);
 					x = parseInt(x*100);
 					
-					// TODO: Make input box for this
 					$('#' + id + '_jGraduate_SpreadInput').val(x);
 				};
 				

@@ -116,15 +116,19 @@ div.jGraduate_StopSection {
 }
 
 div.jGraduate_SpreadField {
-
+	
 	text-align: center;
 	float: left;
+}
+
+div.jGraduate_SpreadField input {
+	margin-top: 10px;
 }
 
 .jGraduate_SpreadField .jGraduate_Form_Section {
 	width: 250px;
 	padding: 2px;
-	height: 44px;
+	height: 80px;
 	overflow: visible;
 }
 
@@ -224,8 +228,24 @@ div.jGraduate_stopPicker {
 	position: absolute;
 	left: 284px;
 	width: 266px;
-	top: 100px;
+	top: 130px;
 	margin: -3px 3px 0px 4px;
+}
+
+.jGraduate_Colorblocks {
+	display: table;
+	border-spacing: 0 5px;
+}
+
+.jGraduate_colorblock {
+	display: table-row;
+}
+
+.jGraduate_Colorblocks .jGraduate_colorblock > * {
+	display: table-cell;
+	vertical-align: middle;
+	margin: 0;
+	float: none;
 }
 
 .jGraduate_rgPick div.jGraduate_StopSection {
