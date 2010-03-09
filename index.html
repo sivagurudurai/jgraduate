@@ -33,6 +33,14 @@
 						var parent = oldgrad.parentNode;
 						parent.replaceChild(newgrad, oldgrad);
 						$('#r').attr('fill', 'url(#grad)');
+					} else if (p.type == "radialGradient") {
+						var oldgrad = document.getElementById("grad");
+						var newgrad = document.importNode(p.radialGradient, true);
+						newgrad.id = "grad";
+						// replace the old gradient with the new one
+						var parent = oldgrad.parentNode;
+						parent.replaceChild(newgrad, oldgrad);
+						$('#r').attr('fill', 'url(#grad)');
 					}
 					else { // solid color
 						$('#r').attr('fill', (p.solidColor!='none'?'#':'') +p.solidColor);
@@ -56,10 +64,12 @@
 			var rect = $("#r");
 			var alpha = rect.attr("fill-opacity")*100 || 100;
 			fill = rect.attr("fill");
-			if (fill == "url(#grad)") {
-				paint = new $.jGraduate.Paint({alpha: alpha, linearGradient: document.getElementById("grad")});
-			}
-			else {
+			var grad = document.getElementById("grad")
+			if (fill == "url(#grad)" && grad.tagName == "linearGradient") {
+				paint = new $.jGraduate.Paint({alpha: alpha, linearGradient: grad});
+			} else if(fill == "url(#grad)" && grad.tagName == "radialGradient") {
+				paint = new $.jGraduate.Paint({alpha: alpha, radialGradient: grad});
+			} else {
 				paint = new $.jGraduate.Paint({alpha: alpha, solidColor: fill.substr(1)});
 			}
 			launchPicker($(this), paint); 
