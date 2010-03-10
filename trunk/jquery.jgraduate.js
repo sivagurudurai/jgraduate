@@ -100,12 +100,14 @@ $.jGraduate = {
     		else if (options.linearGradient) {
     			this.type = "linearGradient";
     			this.solidColor = null;
+    			this.radialGradient = null;
     			this.linearGradient = $.cloneNode(options.linearGradient);
     		}
     		// create linear gradient paint
     		else if (options.radialGradient) {
     			this.type = "radialGradient";
     			this.solidColor = null;
+    			this.linearGradient = null;
     			this.radialGradient = $.cloneNode(options.radialGradient);
     		}
     		// create solid color paint
@@ -118,6 +120,7 @@ $.jGraduate = {
 	    		this.type = "none";
     			this.solidColor = null;
     			this.linearGradient = null;
+    			this.radialGradient = null;
 	    	}
 		}
 };
@@ -147,6 +150,15 @@ jQuery.fn.jGraduate =
             }
             
             var okClicked = function() {
+	            // TODO: Fix this ugly hack
+	            if($this.paint.type == "radialGradient") {
+	            	$this.paint.linearGradient = null;
+	            } else if($this.paint.type == "linearGradient") {
+	            	$this.paint.radialGradient = null;	            
+	            } else if($this.paint.type == "solidColor") {
+	            	$this.paint.linearGradient = null;
+	            	$this.paint.radialGradient = null;
+	            }
             	$.isFunction($this.okCallback) && $this.okCallback($this.paint);
             	$this.hide();
             },
@@ -169,7 +181,7 @@ jQuery.fn.jGraduate =
 			if ($this.paint.type == "none") {
 				$this.paint = $.jGraduate.Paint({solidColor: 'ffffff'});
 			}
-
+			
             $this.addClass('jGraduate_Picker');
             $this.html('<ul class="jGraduate_tabs">' +
             				'<li class="jGraduate_tab_color jGraduate_tab_current" data-type="col">Solid Color</li>' +
