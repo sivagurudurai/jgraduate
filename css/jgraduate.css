@@ -115,24 +115,24 @@ div.jGraduate_StopSection {
 	text-align: center;
 }
 
-div.jGraduate_SpreadField {
+div.jGraduate_RadiusField {
 	
 	text-align: center;
 	float: left;
 }
 
-div.jGraduate_SpreadField input {
+div.jGraduate_RadiusField input {
 	margin-top: 10px;
 }
 
-.jGraduate_SpreadField .jGraduate_Form_Section {
+.jGraduate_RadiusField .jGraduate_Form_Section {
 	width: 250px;
 	padding: 2px;
 	height: 80px;
 	overflow: visible;
 }
 
-.jGraduate_Spread {
+.jGraduate_Radius {
 	border:1px solid #BBB;
 	cursor:ew-resize;
 	height:20px;
@@ -141,7 +141,7 @@ div.jGraduate_SpreadField input {
 }
 
 
-.jGraduate_SpreadArrows {
+.jGraduate_RadiusArrows {
 	top: 0;
 	left: 0;
 	position: absolute;
