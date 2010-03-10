@@ -1,10 +1,12 @@
 ﻿/*
- * jGraduate 0.3.x
+ * jGraduate 0.4.x
  *
  * jQuery Plugin for a gradient picker
  *
- * Copyright (c) 2009 Jeff Schiller
+ * Copyright (c) 2010 Jeff Schiller
  * http://blog.codedread.com/
+ * Copyright (c) 2010 Alexis Deveria
+ * http://a.deveria.com/
  *
  * Apache 2 License
 
@@ -23,12 +25,14 @@ where options is an object literal:
 		alpha: Number representing opacity (0-100),
 		solidColor: String representing #RRGGBB hex of color,
 		linearGradient: object of interface SVGLinearGradientElement,
+		radialGradient: object of interface SVGRadialGradientElement,
 	}
 
 $.jGraduate.Paint() -> constructs a 'none' color
 $.jGraduate.Paint({copy: o}) -> creates a copy of the paint o
 $.jGraduate.Paint({hex: "#rrggbb"}) -> creates a solid color paint with hex = "#rrggbb"
 $.jGraduate.Paint({linearGradient: o, a: 50}) -> creates a linear gradient paint with opacity=0.5
+$.jGraduate.Paint({radialGradient: o, a: 7}) -> creates a radial gradient paint with opacity=0.07
 $.jGraduate.Paint({hex: "#rrggbb", linearGradient: o}) -> throws an exception?
 
 - picker accepts the following object as input:
@@ -235,11 +239,11 @@ jQuery.fn.jGraduate =
 					'<div class="jGraduate_Form_Section jGraduate_Colorblocks">' +
 						'<div class="jGraduate_colorblock"><span>Center:</span>' +
 						'<div id="' + id + '_jGraduate_colorBoxCenter" class="colorBox"></div>' +
-						'<label id="' + id + '_jGraduate_beginOpacity"> 100%</label></div>' +
+						'<label id="' + id + '_rg_jGraduate_centerOpacity"> 100%</label></div>' +
 
 						'<div class="jGraduate_colorblock"><span>Outer:</span>' +
 							'<div id="' + id + '_jGraduate_colorBoxOuter" class="colorBox"></div>' +
-							'<label id="' + id + '_jGraduate_beginOpacity"> 100%</label></div>' +
+							'<label id="' + id + '_jGraduate_outerOpacity"> 100%</label></div>' +
 					'</div>' +
 				'</div>' +
 				'<div class="jGraduate_StopSection">' +
@@ -250,7 +254,7 @@ jQuery.fn.jGraduate =
     	        		'<div class="jGraduate_Form_Section">' +
 	    	        		'<label>x:</label>' +
 		    	        	'<input type="text" id="' + id + '_jGraduate_cx" size="3" title="Enter x value between 0.0 and 1.0"/>' +
-    		    	    	'<label>y:</label>' +
+    		    	    	'<label> y:</label>' +
         		    		'<input type="text" id="' + id + '_jGraduate_cy" size="3" title="Enter y value between 0.0 and 1.0"/>' +
     	    	    	'</div>' +
     	    	    '</div>' +
@@ -260,17 +264,17 @@ jQuery.fn.jGraduate =
 	    	        		'<label>Match center: <input type="checkbox" checked="checked" id="' + id + '_jGraduate_match_ctr"/></label><br/>' +
 	    	        		'<label>x:</label>' +
 		    	        	'<input type="text" id="' + id + '_jGraduate_fx" size="3" title="Enter x value between 0.0 and 1.0"/>' +
-    		    	    	'<label>y:</label>' +
+    		    	    	'<label> y:</label>' +
         		    		'<input type="text" id="' + id + '_jGraduate_fy" size="3" title="Enter y value between 0.0 and 1.0"/>' +
     	    	    	'</div>' +
     	    	    '</div>' +
-        	   		'<div class="jGraduate_SpreadField">' +
-	            		'<label class="jGraduate_Form_Heading">Spread</label>' +
+        	   		'<div class="jGraduate_RadiusField">' +
+	            		'<label class="jGraduate_Form_Heading">Radius</label>' +
     	        		'<div class="jGraduate_Form_Section">' +
-							'<div id="' + id + '_jGraduate_SpreadContainer" class="jGraduate_SpreadContainer"></div>' +
-							'<input type="text" id="' + id + '_jGraduate_SpreadInput" size="3" value="100"/>%' +
-							'<div id="' + id + '_jGraduate_Spread" class="jGraduate_Spread" title="Click to set spread distance">' +
-								'<img id="' + id + '_jGraduate_SpreadArrows" class="jGraduate_SpreadArrows" src="' + $settings.images.clientPath + 'rangearrows2.gif"></img>' +
+							'<div id="' + id + '_jGraduate_RadiusContainer" class="jGraduate_RadiusContainer"></div>' +
+							'<input type="text" id="' + id + '_jGraduate_RadiusInput" size="3" value="100"/>%' +
+							'<div id="' + id + '_jGraduate_Radius" class="jGraduate_Radius" title="Click to set radius">' +
+								'<img id="' + id + '_jGraduate_RadiusArrows" class="jGraduate_RadiusArrows" src="' + $settings.images.clientPath + 'rangearrows2.gif"></img>' +
 							'</div>' +
     	    	    	'</div>' +
     	    	    '</div>' +
@@ -655,14 +659,15 @@ jQuery.fn.jGraduate =
 				var posx = parseInt(255*(gradalpha/100)) - 4.5;
 				$('#' + id + '_rg_jGraduate_AlphaArrows').css({'margin-left':posx});
 				
+				var grad = $this.paint.radialGradient;
 				
-				var cx = parseFloat($this.paint.radialGradient.getAttribute('cx')||0.5),
-					cy = parseFloat($this.paint.radialGradient.getAttribute('cy')||0.5),
-					fx = parseFloat($this.paint.radialGradient.getAttribute('fx')||0.5),
-					fy = parseFloat($this.paint.radialGradient.getAttribute('fy')||0.5);
+				var cx = parseFloat(grad.getAttribute('cx')||0.5),
+					cy = parseFloat(grad.getAttribute('cy')||0.5),
+					fx = parseFloat(grad.getAttribute('fx')||0.5),
+					fy = parseFloat(grad.getAttribute('fy')||0.5);
 				
 				// No match, so show focus point
-				var showFocus = !(cx == fx && cy == fy);
+				var showFocus = grad.getAttribute('fx') != null && !(cx == fx && cy == fy);
 				
 				var rect = document.createElementNS(ns.svg, 'rect');
 				rect.id = id + '_rg_jgraduate_rect';
@@ -812,9 +817,9 @@ jQuery.fn.jGraduate =
 					stops = $this.paint.radialGradient.getElementsByTagNameNS(ns.svg, 'stop');
 				}
 				var radius = $this.paint.radialGradient.getAttribute('r')-0;
-				var spreadx = parseInt((245/2)*(radius)) - 4.5;
-				$('#' + id + '_jGraduate_SpreadArrows').css({'margin-left':spreadx});
-				$('#' + id + '_jGraduate_SpreadInput').val(parseInt(radius*100)).change(function(e) {
+				var radiusx = parseInt((245/2)*(radius)) - 4.5;
+				$('#' + id + '_jGraduate_RadiusArrows').css({'margin-left':radiusx});
+				$('#' + id + '_jGraduate_RadiusInput').val(parseInt(radius*100)).change(function(e) {
 					var x = this.value / 100;
 					if(x < 0.01) {
 						x = 0.01;
@@ -824,7 +829,7 @@ jQuery.fn.jGraduate =
 					// Allow higher value, but pretend it's the max for the slider
 					if(x > 2) x = 2;
 					var posx = parseInt((245/2) * x) - 4.5;
-					$('#' + id + '_jGraduate_SpreadArrows').css({'margin-left':posx});
+					$('#' + id + '_jGraduate_RadiusArrows').css({'margin-left':posx});
 					
 				});
 				
@@ -859,34 +864,34 @@ jQuery.fn.jGraduate =
 					evt.preventDefault();
 				});
 				
-				var setSpreadSlider = function(e, div) {
+				var setRadiusSlider = function(e, div) {
 					var offset = div.offset();
 					var x = (e.pageX - offset.left - parseInt(div.css('border-left-width')));
 					if (x > 245) x = 245;
 					if (x <= 1) x = 1;
 					var posx = x - 5;
 					x /= (245/2);
-					$('#' + id + '_jGraduate_SpreadArrows').css({'margin-left':posx});
+					$('#' + id + '_jGraduate_RadiusArrows').css({'margin-left':posx});
 					$this.paint.radialGradient.setAttribute('r', x);
 					x = parseInt(x*100);
 					
-					$('#' + id + '_jGraduate_SpreadInput').val(x);
+					$('#' + id + '_jGraduate_RadiusInput').val(x);
 				};
 				
-				// handle dragging on the spread slider
-				var bSlidingSpread = false;
-				$('#' + id + '_jGraduate_Spread').mousedown(function(evt) {
-					setSpreadSlider(evt, $(this));
-					bSlidingSpread = true;
+				// handle dragging on the radius slider
+				var bSlidingRadius = false;
+				$('#' + id + '_jGraduate_Radius').mousedown(function(evt) {
+					setRadiusSlider(evt, $(this));
+					bSlidingRadius = true;
 					evt.preventDefault();
 				}).mousemove(function(evt) {
-					if (bSlidingSpread) {
-						setSpreadSlider(evt, $(this));
+					if (bSlidingRadius) {
+						setRadiusSlider(evt, $(this));
 						evt.preventDefault();
 					}
 				}).mouseup(function(evt) {
-					setSpreadSlider(evt, $(this));
-					bSlidingSpread = false;
+					setRadiusSlider(evt, $(this));
+					bSlidingRadius = false;
 					evt.preventDefault();
 				});
 				
