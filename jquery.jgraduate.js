@@ -1,5 +1,5 @@
 ﻿/*
- * jGraduate 0.4.x
+ * jGraduate 0.3.x
  *
  * jQuery Plugin for a gradient picker
  *
@@ -403,7 +403,7 @@ jQuery.fn.jGraduate =
 					$this.paint.solidColor = null;
 					okClicked();
 				});
-				$('#'+id+'_lg_jGraduate_Ok').bind('click', function(paint) {
+				$('#'+id+'_lg_jGraduate_Cancel').bind('click', function(paint) {
 					cancelClicked();
 				});
 				
