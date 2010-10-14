@@ -46,6 +46,9 @@ $.jGraduate.Paint({hex: "#rrggbb", linearGradient: o}) -> throws an exception?
 
  *
  */
+ 
+(function() {
+ 
 var ns = { svg: 'http://www.w3.org/2000/svg', xlink: 'http://www.w3.org/1999/xlink' };
 if(!window.console) {
   window.console = new function() {
@@ -53,27 +56,12 @@ if(!window.console) {
     this.dir = function(str) {};
   };
 }
-$.cloneNode = function(el) {
-	if(!window.opera) return el.cloneNode(true);
-	// manually create a copy of the element
-	opera.postError(ns.svg, el.nodeName);
-	var new_el = document.createElementNS(ns.svg, el.nodeName);
-	$.each(el.attributes, function(i, attr) {
-		new_el.setAttributeNS(ns.svg, attr.nodeName, attr.nodeValue);
-	});
-	$.each(el.childNodes, function(i, child) {
-		if(child.nodeType == 1) {
-			new_el.appendChild($.cloneNode(child));
-		}
-	});
-	return new_el;
-}
 
 $.jGraduate = { 
 	Paint:
 		function(opt) {
 			var options = opt || {};
-			this.alpha = options.alpha || 100;
+			this.alpha = isNaN(options.alpha) ? 100 : options.alpha;
 			// copy paint object
     		if (options.copy) {
     			this.type = options.copy.type;
@@ -89,10 +77,10 @@ $.jGraduate = {
     					this.solidColor = options.copy.solidColor;
     					break;
     				case "linearGradient":
-    					this.linearGradient = $.cloneNode(options.copy.linearGradient);
+    					this.linearGradient = options.copy.linearGradient.cloneNode(true);
     					break;
     				case "radialGradient":
-    					this.radialGradient = $.cloneNode(options.copy.radialGradient);
+    					this.radialGradient = options.copy.radialGradient.cloneNode(true);
     					break;
     			}
     		}
@@ -101,14 +89,14 @@ $.jGraduate = {
     			this.type = "linearGradient";
     			this.solidColor = null;
     			this.radialGradient = null;
-    			this.linearGradient = $.cloneNode(options.linearGradient);
+    			this.linearGradient = options.linearGradient.cloneNode(true);
     		}
     		// create linear gradient paint
     		else if (options.radialGradient) {
     			this.type = "radialGradient";
     			this.solidColor = null;
     			this.linearGradient = null;
-    			this.radialGradient = $.cloneNode(options.radialGradient);
+    			this.radialGradient = options.radialGradient.cloneNode(true);
     		}
     		// create solid color paint
     		else if (options.solidColor) {
@@ -325,7 +313,7 @@ jQuery.fn.jGraduate =
 				// if we are sent a gradient, import it 
 				if ($this.paint.type == "linearGradient") {
 					$this.paint.linearGradient.id = id+'_jgraduate_grad';
-					$this.paint.linearGradient = svg.appendChild($.cloneNode($this.paint.linearGradient));
+					$this.paint.linearGradient = svg.appendChild($this.paint.linearGradient.cloneNode(true));
 				} else { // we create a gradient
 					var grad = svg.appendChild(document.createElementNS(ns.svg, 'linearGradient'));
 					grad.id = id+'_jgraduate_grad';
@@ -579,8 +567,8 @@ jQuery.fn.jGraduate =
 							images: { clientPath: $settings.images.clientPath },
 							color: { active: color, alphaSupport: true }
 						}, function(color){
-							beginColor = color.get_Hex() ? ('#'+color.get_Hex()) : "none";
-							beginOpacity = color.get_A() ? color.get_A()/100 : 1;
+							beginColor = color.val('hex') ? ('#'+color.val('hex')) : "none";
+							beginOpacity = color.val('ahex') ? color.val('ahex')/100 : 1;
 							colorbox.css('background', beginColor);
 							$('#'+id+'_jGraduate_beginOpacity').html(parseInt(beginOpacity*100)+'%');
 							stops[0].setAttribute('stop-color', beginColor);
@@ -603,8 +591,8 @@ jQuery.fn.jGraduate =
 							images: { clientPath: $settings.images.clientPath },
 							color: { active: color, alphaSupport: true }
 						}, function(color){
-							endColor = color.get_Hex() ? ('#'+color.get_Hex()) : "none";
-							endOpacity = color.get_A() ? color.get_A()/100 : 1;
+							endColor = color.val('hex') ? ('#'+color.val('hex')) : "none";
+							endOpacity = color.val('ahex') ? color.val('ahex')/100 : 1;
 							colorbox.css('background', endColor);
 							$('#'+id+'_jGraduate_endOpacity').html(parseInt(endOpacity*100)+'%');
 							stops[1].setAttribute('stop-color', endColor);
@@ -617,28 +605,7 @@ jQuery.fn.jGraduate =
 						});
 				});            
 				
-				// --------------
-				var thisAlpha = ($this.paint.alpha*255/100).toString(16);
-				while (thisAlpha.length < 2) { thisAlpha = "0" + thisAlpha; }
-				color = $this.paint.solidColor == "none" ? "" : $this.paint.solidColor + thisAlpha;
-				colPicker.jPicker(
-					{
-						window: { title: $settings.window.pickerTitle },
-						images: { clientPath: $settings.images.clientPath },
-						color: { active: color, alphaSupport: true }
-					},
-					function(color) {
-						$this.paint.type = "solidColor";
-						$this.paint.alpha = color.get_A() ? color.get_A() : 100;
-						$this.paint.solidColor = color.get_Hex() ? color.get_Hex() : "none";
-						$this.paint.linearGradient = null;
-						okClicked(); 
-					},
-					null,
-					function(){ cancelClicked(); }
-					);
 			}());	
-			
 			
 			// Radial gradient
 			(function() {
@@ -647,7 +614,7 @@ jQuery.fn.jGraduate =
 				// if we are sent a gradient, import it 
 				if ($this.paint.type == "radialGradient") {
 					$this.paint.radialGradient.id = id+'_rg_jgraduate_grad';
-					$this.paint.radialGradient = svg.appendChild($.cloneNode($this.paint.radialGradient));
+					$this.paint.radialGradient = svg.appendChild($this.paint.radialGradient.cloneNode(true));
 				} else { // we create a gradient
 					var grad = svg.appendChild(document.createElementNS(ns.svg, 'radialGradient'));
 					grad.id = id+'_rg_jgraduate_grad';
@@ -996,8 +963,8 @@ jQuery.fn.jGraduate =
 							images: { clientPath: $settings.images.clientPath },
 							color: { active: color, alphaSupport: true }
 						}, function(color){
-							centerColor = color.get_Hex() ? ('#'+color.get_Hex()) : "none";
-							centerOpacity = color.get_A() ? color.get_A()/100 : 1;
+							centerColor = color.val('hex') ? ('#'+color.val('hex')) : "none";
+							centerOpacity = color.val('ahex') ? color.val('ahex')/100 : 1;
 							colorbox.css('background', centerColor);
 							$('#'+id+'_rg_jGraduate_centerOpacity').html(parseInt(centerOpacity*100)+'%');
 							stops[0].setAttribute('stop-color', centerColor);
@@ -1020,8 +987,8 @@ jQuery.fn.jGraduate =
 							images: { clientPath: $settings.images.clientPath },
 							color: { active: color, alphaSupport: true }
 						}, function(color){
-							outerColor = color.get_Hex() ? ('#'+color.get_Hex()) : "none";
-							outerOpacity = color.get_A() ? color.get_A()/100 : 1;
+							outerColor = color.val('hex') ? ('#'+color.val('hex')) : "none";
+							outerOpacity = color.val('ahex') ? color.val('ahex')/100 : 1;
 							colorbox.css('background', outerColor);
 							$('#'+id+'_jGraduate_outerOpacity').html(parseInt(outerOpacity*100)+'%');
 							stops[1].setAttribute('stop-color', outerColor);
@@ -1037,7 +1004,14 @@ jQuery.fn.jGraduate =
 				// --------------
 				var thisAlpha = ($this.paint.alpha*255/100).toString(16);
 				while (thisAlpha.length < 2) { thisAlpha = "0" + thisAlpha; }
+				thisAlpha = thisAlpha.split(".")[0];
 				color = $this.paint.solidColor == "none" ? "" : $this.paint.solidColor + thisAlpha;
+				
+				// This should be done somewhere else, probably
+				$.extend($.fn.jPicker.defaults.window, {
+					alphaSupport: true, effects: {type: 'show',speed: 0}
+				});
+				
 				colPicker.jPicker(
 					{
 						window: { title: $settings.window.pickerTitle },
@@ -1046,8 +1020,8 @@ jQuery.fn.jGraduate =
 					},
 					function(color) {
 						$this.paint.type = "solidColor";
-						$this.paint.alpha = color.get_A() ? color.get_A() : 100;
-						$this.paint.solidColor = color.get_Hex() ? color.get_Hex() : "none";
+						$this.paint.alpha = color.val('ahex') ? Math.round((color.val('a') / 255) * 100) : 100;
+						$this.paint.solidColor = color.val('hex') ? color.val('hex') : "none";
 						$this.paint.radialGradient = null;
 						okClicked(); 
 					},
@@ -1063,7 +1037,6 @@ jQuery.fn.jGraduate =
 				$(idref + " > div").hide();
 				$(idref + ' .jGraduate_' +  $(this).attr('data-type') + 'Pick').show();
 			});
-			
 			$(idref + " > div").hide();
 			tabs.removeClass('jGraduate_tab_current');
 			var tab;
@@ -1078,8 +1051,12 @@ jQuery.fn.jGraduate =
 					tab = $(idref + ' .jGraduate_tab_color');
 					break;
 			}
-			tab.addClass('jGraduate_tab_current').click();	
-
 			$this.show();
+			
+			// jPicker will try to show after a 0ms timeout, so need to fire this after that
+			setTimeout(function() {
+				tab.addClass('jGraduate_tab_current').click();	
+			}, 10);
 		});
 	};
+})();
