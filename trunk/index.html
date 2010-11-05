@@ -51,10 +51,12 @@
 		
 		var svgdoc = new DOMParser().parseFromString(
 			'<svg xmlns="http://www.w3.org/2000/svg">\
-				<linearGradient id="grad">\
-					<stop stop-color="#000" offset="0.0"/>\
-					<stop stop-color="#FF0000" offset="1.0"/>\
-				</linearGradient>\
+				<radialGradient id="grad" spreadMethod="pad" r="1.1624701142567029" cx="0.24609375" cy="0.26966148614883423">\
+					<stop stop-color="#ffcb6b" offset="0.06640625"/>\
+					<stop stop-color="#ffff60" offset="0.12890625"/>\
+					<stop stop-color="#91b3f7" offset="0.33203125"/>\
+					<stop stop-color="#3fc2ff" offset="1.0"/>\
+				</radialGradient>\
 				<rect id="r" width="100%" height="100%" fill="url(#grad)"/>\
 			</svg>', 'text/xml');
 
