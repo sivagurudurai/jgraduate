@@ -508,6 +508,7 @@ jQuery.fn.jGraduate =
 					selectStop(this);
 					drag = cur_stop;
 					$win.mousemove(dragColor).mouseup(remDrags);
+					stop_offset = stopMakerDiv.offset();
 					e.preventDefault();
 					return false;
 				}).data('stop', stop).data('bg', pathbg).dblclick(function() {
@@ -567,7 +568,7 @@ jQuery.fn.jGraduate =
 				
 			var stops, stopGroup;
 			
-			var stopMakerDiv = $('#gradPicker_jGraduate_StopSlider');
+			var stopMakerDiv = $('#' + id + '_jGraduate_StopSlider');
 
 			var cur_stop, stopGroup, stopMakerSVG, drag;
 			
@@ -590,7 +591,7 @@ jQuery.fn.jGraduate =
 			// 	root.append(delStop);
 			}
 			
-			var stop_offset = stopMakerDiv.offset();
+			var stop_offset;
 			
 			function remDrags() {
 				$win.unbind('mousemove', dragColor);
@@ -619,13 +620,12 @@ jQuery.fn.jGraduate =
 			
 			function dragColor(evt) {
 
-				var x = evt.pageX - stop_offset.left - 20;
+				var x = evt.pageX - stop_offset.left;
 				var y = evt.pageY - stop_offset.top;
 				x = x < 10 ? 10 : x > MAX + 10 ? MAX + 10: x;
 
 				var xf_str = 'translate(' + x + ', 26)';
-				
-					if(y < 300 || y > 460) {
+					if(y < -60 || y > 130) {
 						delStop.setAttribute('display', 'block');
 						delStop.setAttribute('transform', xf_str);
 					} else {
@@ -674,9 +674,10 @@ jQuery.fn.jGraduate =
 			trans_img.setAttributeNS(ns.xlink, 'xlink:href', bg_image);
 			
 			$(stopMakerSVG).click(function(evt) {
+				stop_offset = stopMakerDiv.offset();
 				var target = evt.target;
 				if(target.tagName === 'path') return;
-				var x = evt.pageX - stop_offset.left - 36;
+				var x = evt.pageX - stop_offset.left - 8;
 				x = x < 10 ? 10 : x > MAX + 10 ? MAX + 10: x;
 				mkStop(x / MAX, 0, 0, true);
 				evt.stopPropagation();
