@@ -8,7 +8,7 @@
  * Copyright (c) 2010 Alexis Deveria
  * http://a.deveria.com/
  *
- * Apache 2 License
+ * MIT License
 
 jGraduate( options, okCallback, cancelCallback )
 
